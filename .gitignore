@@ -3,3 +3,6 @@
 .RData
 .Ruserdata
 DeepLion.Rproj
+.DS_Store
+data/
+density_biomass.rmd
