@@ -1,1 +1,10 @@
-theme: jekyll-theme-cayman
+name: "DeepLion"
+navbar:
+  left:
+  - text: "Home"
+   href: README.html
+  - text: "Density and Biomass"
+   href: Density_Biomass.html
+output:
+  html_document:
+  theme: jekyll-theme-cayman
