@@ -1,6 +1,6 @@
 name: "DeepLion"
 navbar:
-  title: "Home"
+  title: "DeepLion"
   left:
     - text: "Density and Biomass"
       href: density_biomass.html
