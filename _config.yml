@@ -1,5 +1,6 @@
 name: "DeepLion"
 navbar:
+  title: "DeepLion"
   left:
   - text: "Home"
    href: README.html
@@ -7,4 +8,4 @@ navbar:
    href: Density_Biomass.html
 output:
   html_document:
-  theme: jekyll-theme-cayman
+ theme: jekyll-theme-cayman
