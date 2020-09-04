@@ -4,7 +4,7 @@ navbar:
   left:
     - text: "Density and Biomass"
       href: density_biomass.html
-output_dir: "."
+output_dir: "docs"
 output:
   html_document:
-    theme: jekyll-theme-cayman
+    theme: cosmo

@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Sarah Heidmann" />
+
+
+<title>Density and biomass of fish across MPA boundaries in the US Virgin Islands</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Home</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="density_biomass.html">Density and Biomass</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Density and biomass of fish across MPA boundaries in the US Virgin Islands</h1>
+<h4 class="author">Sarah Heidmann</h4>
+<h4 class="date">8/31/2020</h4>
+
+</div>
+
+
+<div id="summary" class="section level2">
+<h2>Summary</h2>
+<p>This document examines density and biomass of fish communities inside and outside the boundaries of the Hind Bank Marine Conservation District (MCD) and Virgin Islands Coral Reef National Monument (VICRNM).</p>
+</div>
+<div id="trophic-groups" class="section level2">
+<h2>Trophic groups</h2>
+<div id="density" class="section level3">
+<h3>Density</h3>
+<table>
+<caption>Mean and variance of fish density (#/100m<sup>2</sup>) for trophic groups of interest across sites.</caption>
+<thead>
+<tr class="header">
+<th align="center">Trophic Group</th>
+<th align="center">MPA</th>
+<th align="center">Location</th>
+<th align="center">Mean Density</th>
+<th align="center">SD</th>
+<th align="center">n</th>
+<th align="center">SEM</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">all fish</td>
+<td align="center">MCD</td>
+<td align="center">IN</td>
+<td align="center">154.84</td>
+<td align="center">110.37</td>
+<td align="center">31</td>
+<td align="center">19.82</td>
+</tr>
+<tr class="even">
+<td align="center">all fish</td>
+<td align="center">MCD</td>
+<td align="center">OUT</td>
+<td align="center">129.27</td>
+<td align="center">100.39</td>
+<td align="center">30</td>
+<td align="center">18.33</td>
+</tr>
+<tr class="odd">
+<td align="center">all fish</td>
+<td align="center">VICRNM</td>
+<td align="center">IN</td>
+<td align="center">239.19</td>
+<td align="center">165.22</td>
+<td align="center">31</td>
+<td align="center">29.67</td>
+</tr>
+<tr class="even">
+<td align="center">all fish</td>
+<td align="center">VICRNM</td>
+<td align="center">OUT</td>
+<td align="center">175.47</td>
+<td align="center">130.15</td>
+<td align="center">30</td>
+<td align="center">23.76</td>
+</tr>
+<tr class="odd">
+<td align="center">herbivores</td>
+<td align="center">MCD</td>
+<td align="center">IN</td>
+<td align="center">40.39</td>
+<td align="center">19.00</td>
+<td align="center">31</td>
+<td align="center">3.41</td>
+</tr>
+<tr class="even">
+<td align="center">herbivores</td>
+<td align="center">MCD</td>
+<td align="center">OUT</td>
+<td align="center">36.50</td>
+<td align="center">19.01</td>
+<td align="center">30</td>
+<td align="center">3.47</td>
+</tr>
+<tr class="odd">
+<td align="center">herbivores</td>
+<td align="center">VICRNM</td>
+<td align="center">IN</td>
+<td align="center">65.10</td>
+<td align="center">35.74</td>
+<td align="center">31</td>
+<td align="center">6.42</td>
+</tr>
+<tr class="even">
+<td align="center">herbivores</td>
+<td align="center">VICRNM</td>
+<td align="center">OUT</td>
+<td align="center">74.80</td>
+<td align="center">42.56</td>
+<td align="center">30</td>
+<td align="center">7.77</td>
+</tr>
+<tr class="odd">
+<td align="center">piscivores</td>
+<td align="center">MCD</td>
+<td align="center">IN</td>
+<td align="center">3.68</td>
+<td align="center">2.21</td>
+<td align="center">31</td>
+<td align="center">0.40</td>
+</tr>
+<tr class="even">
+<td align="center">piscivores</td>
+<td align="center">MCD</td>
+<td align="center">OUT</td>
+<td align="center">4.63</td>
+<td align="center">3.84</td>
+<td align="center">30</td>
+<td align="center">0.70</td>
+</tr>
+<tr class="odd">
+<td align="center">piscivores</td>
+<td align="center">VICRNM</td>
+<td align="center">IN</td>
+<td align="center">6.45</td>
+<td align="center">7.40</td>
+<td align="center">31</td>
+<td align="center">1.33</td>
+</tr>
+<tr class="even">
+<td align="center">piscivores</td>
+<td align="center">VICRNM</td>
+<td align="center">OUT</td>
+<td align="center">10.00</td>
+<td align="center">24.33</td>
+<td align="center">30</td>
+<td align="center">4.44</td>
+</tr>
+</tbody>
+</table>
+<div class="figure">
+<img src="density_biomass_files/figure-html/trophic%20density-1.png" alt="Mean fish density (#/100m^2^) for trophic groups of interest across sites. Error bars represent mean &amp;plusmn; SE." width="672" />
+<p class="caption">
+Mean fish density (#/100m<sup>2</sup>) for trophic groups of interest across sites. Error bars represent mean ± SE.
+</p>
+</div>
+</div>
+<div id="biomass" class="section level3">
+<h3>Biomass</h3>
+<table>
+<caption>Mean and variance of fish biomass (kg/100m<sup>2</sup>) for trophic groups of interest across sites.</caption>
+<thead>
+<tr class="header">
+<th align="center">Trophic Group</th>
+<th align="center">MPA</th>
+<th align="center">Location</th>
+<th align="center">Mean Biomass (kg)</th>
+<th align="center">SD</th>
+<th align="center">n</th>
+<th align="center">SEM</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">all fish</td>
+<td align="center">MCD</td>
+<td align="center">IN</td>
+<td align="center">6.57</td>
+<td align="center">4.69</td>
+<td align="center">31</td>
+<td align="center">0.84</td>
+</tr>
+<tr class="even">
+<td align="center">all fish</td>
+<td align="center">MCD</td>
+<td align="center">OUT</td>
+<td align="center">10.19</td>
+<td align="center">8.83</td>
+<td align="center">30</td>
+<td align="center">1.61</td>
+</tr>
+<tr class="odd">
+<td align="center">all fish</td>
+<td align="center">VICRNM</td>
+<td align="center">IN</td>
+<td align="center">10.47</td>
+<td align="center">9.85</td>
+<td align="center">31</td>
+<td align="center">1.77</td>
+</tr>
+<tr class="even">
+<td align="center">all fish</td>
+<td align="center">VICRNM</td>
+<td align="center">OUT</td>
+<td align="center">9.47</td>
+<td align="center">11.71</td>
+<td align="center">30</td>
+<td align="center">2.14</td>
+</tr>
+<tr class="odd">
+<td align="center">herbivores</td>
+<td align="center">MCD</td>
+<td align="center">IN</td>
+<td align="center">2.65</td>
+<td align="center">2.38</td>
+<td align="center">31</td>
+<td align="center">0.43</td>
+</tr>
+<tr class="even">
+<td align="center">herbivores</td>
+<td align="center">MCD</td>
+<td align="center">OUT</td>
+<td align="center">2.74</td>
+<td align="center">2.42</td>
+<td align="center">30</td>
+<td align="center">0.44</td>
+</tr>
+<tr class="odd">
+<td align="center">herbivores</td>
+<td align="center">VICRNM</td>
+<td align="center">IN</td>
+<td align="center">2.44</td>
+<td align="center">2.99</td>
+<td align="center">31</td>
+<td align="center">0.54</td>
+</tr>
+<tr class="even">
+<td align="center">herbivores</td>
+<td align="center">VICRNM</td>
+<td align="center">OUT</td>
+<td align="center">2.08</td>
+<td align="center">1.98</td>
+<td align="center">30</td>
+<td align="center">0.36</td>
+</tr>
+<tr class="odd">
+<td align="center">piscivores</td>
+<td align="center">MCD</td>
+<td align="center">IN</td>
+<td align="center">1.63</td>
+<td align="center">1.80</td>
+<td align="center">31</td>
+<td align="center">0.32</td>
+</tr>
+<tr class="even">
+<td align="center">piscivores</td>
+<td align="center">MCD</td>
+<td align="center">OUT</td>
+<td align="center">3.82</td>
+<td align="center">5.94</td>
+<td align="center">30</td>
+<td align="center">1.08</td>
+</tr>
+<tr class="odd">
+<td align="center">piscivores</td>
+<td align="center">VICRNM</td>
+<td align="center">IN</td>
+<td align="center">2.33</td>
+<td align="center">3.39</td>
+<td align="center">31</td>
+<td align="center">0.61</td>
+</tr>
+<tr class="even">
+<td align="center">piscivores</td>
+<td align="center">VICRNM</td>
+<td align="center">OUT</td>
+<td align="center">4.67</td>
+<td align="center">9.01</td>
+<td align="center">30</td>
+<td align="center">1.65</td>
+</tr>
+</tbody>
+</table>
+<div class="figure">
+<img src="density_biomass_files/figure-html/trophic%20biomass-1.png" alt="Mean fish biomass (kg/100m^2^) for trophic groups of interest across sites. Error bars represent mean &amp;plusmn; SE." width="672" />
+<p class="caption">
+Mean fish biomass (kg/100m<sup>2</sup>) for trophic groups of interest across sites. Error bars represent mean ± SE.
+</p>
+</div>
+</div>
+</div>
+<div id="lionfish" class="section level2">
+<h2>Lionfish</h2>
+<div id="density-1" class="section level3">
+<h3>Density</h3>
+<table>
+<caption>Mean and variance of lionfish density (#/100m<sup>2</sup>) across sites.</caption>
+<thead>
+<tr class="header">
+<th align="center">MPA</th>
+<th align="center">Location</th>
+<th align="center">Mean Density</th>
+<th align="center">SD</th>
+<th align="center">n</th>
+<th align="center">SEM</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">MCD</td>
+<td align="center">IN</td>
+<td align="center">0.97</td>
+<td align="center">1.02</td>
+<td align="center">31</td>
+<td align="center">0.18</td>
+</tr>
+<tr class="even">
+<td align="center">MCD</td>
+<td align="center">OUT</td>
+<td align="center">0.63</td>
+<td align="center">1.00</td>
+<td align="center">30</td>
+<td align="center">0.18</td>
+</tr>
+<tr class="odd">
+<td align="center">VICRNM</td>
+<td align="center">IN</td>
+<td align="center">0.32</td>
+<td align="center">1.30</td>
+<td align="center">31</td>
+<td align="center">0.23</td>
+</tr>
+<tr class="even">
+<td align="center">VICRNM</td>
+<td align="center">OUT</td>
+<td align="center">0.20</td>
+<td align="center">0.61</td>
+<td align="center">30</td>
+<td align="center">0.11</td>
+</tr>
+</tbody>
+</table>
+<div class="figure">
+<img src="density_biomass_files/figure-html/lionfish%20density-1.png" alt="Mean lionfish density (#/100m^2^) across sites. Error bars represent mean &amp;plusmn; SE." width="672" />
+<p class="caption">
+Mean lionfish density (#/100m<sup>2</sup>) across sites. Error bars represent mean ± SE.
+</p>
+</div>
+</div>
+<div id="biomass-1" class="section level3">
+<h3>Biomass</h3>
+<table>
+<caption>Mean and variance of lionfish biomass (kg/100m<sup>2</sup>) across sites.</caption>
+<thead>
+<tr class="header">
+<th align="center">MPA</th>
+<th align="center">Location</th>
+<th align="center">Mean Biomass (kg)</th>
+<th align="center">SD</th>
+<th align="center">n</th>
+<th align="center">SEM</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">MCD</td>
+<td align="center">IN</td>
+<td align="center">0.31</td>
+<td align="center">0.43</td>
+<td align="center">31</td>
+<td align="center">0.08</td>
+</tr>
+<tr class="even">
+<td align="center">MCD</td>
+<td align="center">OUT</td>
+<td align="center">0.14</td>
+<td align="center">0.31</td>
+<td align="center">30</td>
+<td align="center">0.06</td>
+</tr>
+<tr class="odd">
+<td align="center">VICRNM</td>
+<td align="center">IN</td>
+<td align="center">0.09</td>
+<td align="center">0.48</td>
+<td align="center">31</td>
+<td align="center">0.09</td>
+</tr>
+<tr class="even">
+<td align="center">VICRNM</td>
+<td align="center">OUT</td>
+<td align="center">0.07</td>
+<td align="center">0.19</td>
+<td align="center">30</td>
+<td align="center">0.04</td>
+</tr>
+</tbody>
+</table>
+<div class="figure">
+<img src="density_biomass_files/figure-html/lionfish%20biomass-1.png" alt="Mean lionfish biomass (kg/100m^2^) across sites. Error bars represent mean &amp;plusmn; SE." width="672" />
+<p class="caption">
+Mean lionfish biomass (kg/100m<sup>2</sup>) across sites. Error bars represent mean ± SE.
+</p>
+</div>
+</div>
+</div>
+<div id="groups-of-interest" class="section level2">
+<h2>Groups of interest</h2>
+<div id="density-2" class="section level3">
+<h3>Density</h3>
+<div class="figure">
+<img src="density_biomass_files/figure-html/group%20density-1.png" alt="Mean fish density (#/100m^2^ &amp;plusmn; SE) across sites for all lionfish and other groups of interest, separated by MPA and inside/outside MPA boundaries. Groups were adapted from Green et al (2012)." width="720" />
+<p class="caption">
+Mean fish density (#/100m<sup>2</sup> ± SE) across sites for all lionfish and other groups of interest, separated by MPA and inside/outside MPA boundaries. Groups were adapted from Green et al (2012).
+</p>
+</div>
+</div>
+<div id="biomass-2" class="section level3">
+<h3>Biomass</h3>
+<div class="figure">
+<img src="density_biomass_files/figure-html/group%20biomass-1.png" alt="Mean fish biomass (kg/100m^2^ &amp;plusmn; SE) across sites for all lionfish and other groups of interest, separated by MPA and inside/outside MPA boundaries. Groups were adapted from Green et al (2012)." width="720" />
+<p class="caption">
+Mean fish biomass (kg/100m<sup>2</sup> ± SE) across sites for all lionfish and other groups of interest, separated by MPA and inside/outside MPA boundaries. Groups were adapted from Green et al (2012).
+</p>
+</div>
+</div>
+</div>
+<div id="families" class="section level2">
+<h2>Families</h2>
+<div class="figure">
+<img src="density_biomass_files/figure-html/family%20biomass-1.png" alt="Mean fish family biomass (kg/100m^2^ &amp;plusmn; SE) across sites, separated by MPA and inside/outside MPA boundaries." width="672" />
+<p class="caption">
+Mean fish family biomass (kg/100m<sup>2</sup> ± SE) across sites, separated by MPA and inside/outside MPA boundaries.
+</p>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
