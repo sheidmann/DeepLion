@@ -3,7 +3,7 @@ navbar:
   title: "Home"
   left:
     - text: "Density and Biomass"
-      href: Density_Biomass.html
+      href: density_biomass.html
 output_dir: "."
 output:
   html_document:
