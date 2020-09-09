@@ -6,7 +6,7 @@ date: "8/31/2020"
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
 # Load libraries
 library(tidyverse)
 library(knitr)
@@ -25,7 +25,7 @@ This document examines density and biomass of fish communities inside and outsid
 
 ### Density
 
-```{r trophic density, echo=FALSE, fig.height = 6, fig.width=7, fig.cap="Mean fish density (#/100m^2^) for trophic groups of interest across sites. Error bars represent mean &plusmn; SE."}
+```{r trophic density, fig.height = 6, fig.width=7, fig.cap="Mean fish density (#/100m^2^) for trophic groups of interest across sites. Error bars represent mean &plusmn; SE."}
 # Summarize all fish
 totalsum <- dl %>%
      group_by(MPA, InOut, SiteID) %>%
@@ -77,7 +77,7 @@ ggplot(aes(x= MPA, y = meandens, fill = InOut), data = denssum) +
 ```
 
 ### Biomass
-```{r trophic biomass, echo=FALSE, fig.height = 6, fig.width=7, fig.cap="Mean fish biomass (kg/100m^2^) for trophic groups of interest across sites. Error bars represent mean &plusmn; SE."}
+```{r trophic biomass, fig.height = 6, fig.width=7, fig.cap="Mean fish biomass (kg/100m^2^) for trophic groups of interest across sites. Error bars represent mean &plusmn; SE."}
 # Summarize all fish
 totbiosum <- dl %>%
    group_by(MPA, InOut, SiteID) %>%
@@ -135,7 +135,7 @@ ggplot(aes(x= MPA, y = meanbiokg, fill = InOut), data = biosum) +
 
 ### Density
 
-```{r lionfish density, echo = FALSE, fig.cap="Mean lionfish density (#/100m^2^) across sites. Error bars represent mean &plusmn; SE."}
+```{r lionfish density, fig.cap="Mean lionfish density (#/100m^2^) across sites. Error bars represent mean &plusmn; SE."}
 # Summarize lionfish
 lionsum <- dl %>% filter(ScientificName=="Pterois volitans") %>%
      group_by(MPA, InOut) %>% 
@@ -163,7 +163,7 @@ ggplot(aes(x= MPA, y = meandens, fill = InOut), data = lionsum) +
 ```
 
 ### Biomass
-```{r lionfish biomass, echo = FALSE, fig.cap="Mean lionfish biomass (kg/100m^2^) across sites. Error bars represent mean &plusmn; SE."}
+```{r lionfish biomass, fig.cap="Mean lionfish biomass (kg/100m^2^) across sites. Error bars represent mean &plusmn; SE."}
 # Summarize lionfish
 lionbiosum <- dl %>% filter(ScientificName=="Pterois volitans") %>%
    group_by(MPA, InOut) %>% 
@@ -195,7 +195,7 @@ ggplot(aes(x= MPA, y = meanbiokg, fill = InOut), data = lionbiosum) +
 ## Groups of interest
 
 ### Density
-```{r group density, echo = FALSE, fig.width = 7.5, fig.height = 7, fig.cap="Mean fish density (#/100m^2^ &plusmn; SE) across sites for all lionfish and other groups of interest, separated by MPA and inside/outside MPA boundaries. Groups were adapted from Green et al (2012)."}
+```{r group density, fig.width = 7.5, fig.height = 7, fig.cap="Mean fish density (#/100m^2^ &plusmn; SE) across sites for all lionfish and other groups of interest, separated by MPA and inside/outside MPA boundaries. Groups were adapted from Green et al (2012)."}
 groupnames <- names(dl)[46:55]
 groupdensnames <- groupnames[seq(1,9,2)]
 groupbionames <- groupnames[seq(2,10,2)]
@@ -245,7 +245,7 @@ ggplot(aes(x= MPA, y = meandens, fill = InOut), data = grouplionsum) +
 ```
 
 ### Biomass
-```{r group biomass, echo = FALSE, fig.width = 7.5, fig.height = 7, fig.cap="Mean fish biomass (kg/100m^2^ &plusmn; SE) across sites for all lionfish and other groups of interest, separated by MPA and inside/outside MPA boundaries. Groups were adapted from Green et al (2012)."}
+```{r group biomass, fig.width = 7.5, fig.height = 7, fig.cap="Mean fish biomass (kg/100m^2^ &plusmn; SE) across sites for all lionfish and other groups of interest, separated by MPA and inside/outside MPA boundaries. Groups were adapted from Green et al (2012)."}
 ggplot(aes(x= MPA, y = meanbiokg, fill = InOut), data = grouplionsum) +
    geom_bar(stat = "identity", 
             position = position_dodge2(width = 0.9)) +
@@ -263,7 +263,7 @@ ggplot(aes(x= MPA, y = meanbiokg, fill = InOut), data = grouplionsum) +
 
 
 ## Families
-```{r family biomass, echo = FALSE, fig.fullwidth = TRUE, fig.height = 8, fig.cap="Mean fish family biomass (kg/100m^2^ &plusmn; SE) across sites, separated by MPA and inside/outside MPA boundaries."}
+```{r family biomass, fig.fullwidth = TRUE, fig.height = 8, fig.cap="Mean fish family biomass (kg/100m^2^ &plusmn; SE) across sites, separated by MPA and inside/outside MPA boundaries."}
 fambio <- dl %>%
    group_by(MPA, InOut, Family, SiteID) %>% 
    summarize(totbio = sum(TotalBiomass, na.rm = T), .groups = "drop_last") %>%
