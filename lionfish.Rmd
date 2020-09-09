@@ -1,0 +1,112 @@
+---
+title: "Lionfish"
+author: "Sarah Heidmann"
+date: "9/9/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+```
+```{r library, include=FALSE}
+# Load libraries
+library(tidyverse)
+library(knitr)
+```
+```{r dataImport, include=FALSE}
+# Import data
+lionsize <- read_csv("data/DeepLion_lionsizes.csv")
+# Set colors
+mpaColors <- c("#E69F00", "#56B4E9")
+inoutColors <- c("#00BE6C","#F8766D")
+```
+
+## Summary
+
+This document examines density and biomass of fish communities inside and outside the boundaries of the Hind Bank Marine Conservation District (MCD) and Virgin Islands Coral Reef National Monument (VICRNM).
+
+## Size Frequency
+
+```{r sizefreq, fig.width = 7.5, fig.height = 7, fig.cap="Size frequency distribution of lionfish, separated by MPA and inside/outside MPA boundaries."}
+ggplot(data=lionsize, aes(x=size, fill = InOut)) +
+   geom_histogram(breaks=c(0,5,seq(10,40,10)), color = "black") +
+   scale_fill_manual("",values = inoutColors) +
+   xlab("Size (cm)") +
+   ylab("Frequency") +
+   scale_x_continuous(limits = c(0,40)) +
+   scale_y_continuous(expand=c(0,0)) +
+   facet_wrap(~MPA,ncol=1) +
+   theme(panel.background = element_blank(), axis.line=element_line(),
+         text = element_text(size = 16))
+```
+
+## Depth Patterns
+
+### Size with Depth
+```{r depthSize, fig.width = 7.5, fig.height = 7, fig.cap="Total length of all observed lionfish by depth at which each was observed, separated by MPA and inside/outside MPA boundaries."}
+lionsize <- lionsize %>% 
+     mutate(Zm_pos = -Zm)
+
+sizedepthlm <- lm(size~Zm_pos, lionsize)
+
+ggplot(data = lionsize, aes(x=Zm_pos,y=size)) +
+      geom_point(size = 4, aes(shape=MPA, color=InOut)) +
+   geom_smooth(formula = y~x, method = "lm", group=1) + # for MPA
+   scale_color_manual("",values = inoutColors) +
+   scale_shape_manual("MPA", values = c(16,17)) +
+      xlab("Depth (m)") +
+      ylab("Lionfish Size (cm)") +
+      scale_x_continuous(breaks = seq(10,50,10), labels = seq(10,50,10),
+                         limits = c(15,50))+
+      scale_y_continuous(breaks = seq(0,50,10), labels = seq(0,50,10),
+                         limits = c(0,50),expand = c(0,0)) +
+      theme(panel.background= element_blank(), axis.line=element_line(),
+            legend.key = element_blank(), text = element_text(size = 16))
+
+summary(sizedepthlm)
+```
+
+### Density with Depth
+
+```{r depthDensity, fig.width = 7.5, fig.height = 7, fig.cap="Number of lionfish seen at each site by depth of the site, separated by MPA and inside/outside MPA boundaries."}
+numdepthsum <- lionsize %>% 
+     group_by(MPA, InOut, Zf, Zm_pos) %>%
+     summarize(density = length(size), .groups = "drop")
+
+ggplot(data=numdepthsum, aes(x=Zm_pos,y=density)) +
+      geom_point(size = 4, aes(shape = MPA, color = InOut)) +
+      geom_smooth(formula=y~x,method = "lm", group=1) +
+   scale_color_manual("",values = inoutColors) +
+   scale_shape_manual("MPA", values = c(16,17)) +
+   xlab("Depth (m)") +
+   ylab(expression(paste("Lionfish Density (#/100",m^2,")"))) +
+   scale_x_continuous(breaks = seq(20,50,10), labels = seq(20,50,10))+
+   scale_y_continuous(limits = c(0,8), breaks = seq(0,8,2), labels = seq(0,8,2),
+                      expand = c(0,0))+
+      theme(panel.background= element_blank(), axis.line=element_line(), 
+            text = element_text(size = 16))
+```
+
+### Biomass with Depth
+```{r depthBiomass, fig.width = 7.5, fig.height = 7, fig.cap="Biomass of lionfish seen at each site by depth of the site, separated by MPA and inside/outside MPA boundaries."}
+biodepthsum <- lionsize %>%
+     group_by(MPA, InOut, Zf,Zm_pos) %>%
+     summarize(biokg = sum(bio)/1000, .groups="drop")
+
+ggplot(data=biodepthsum, aes(x=Zm_pos,y=biokg,shape=MPA,color=InOut)) +
+      geom_point(size =4, aes(color=InOut)) +
+      #geom_smooth(method= "lm", group=1) +
+   geom_smooth(formula = y~x, method="lm",se=FALSE)+
+   scale_color_manual("",values = inoutColors) +
+   scale_shape_manual("MPA", values = c(16,17)) +
+   xlab("Depth (m)") +
+   ylab(expression(atop("Lionfish Biomass", 
+                        paste("(kg/100",m^2,")")))) +
+   scale_x_continuous(breaks = seq(20,50,10), labels = seq(20,50,10))+
+   scale_y_continuous(limits = c(0,3), breaks = seq(0,3,0.5),
+                      labels = seq(0,3,0.5), expand = c(0,0))+
+      theme(panel.background= element_blank(), axis.line=element_line(), 
+            text = element_text(size = 16))
+```
+

@@ -4,6 +4,8 @@ navbar:
   left:
     - text: "Density and Biomass"
       href: density_biomass.html
+    - text: "Lionfish"
+      href: lionfish.html
 output_dir: "docs"
 output:
   html_document:
