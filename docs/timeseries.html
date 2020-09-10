@@ -12,7 +12,7 @@
 <meta name="author" content="Sarah Heidmann" />
 
 
-<title>Rugosity</title>
+<title>Time Series</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -296,75 +296,57 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Rugosity</h1>
+<h1 class="title toc-ignore">Time Series</h1>
 <h4 class="author">Sarah Heidmann</h4>
 <h4 class="date">9/10/2020</h4>
 
 </div>
 
 
-<div id="summary" class="section level2">
-<h2>Summary</h2>
-<p>This document examines patterns in fish communities as they relate to rugosity inside and outside the boundaries of the Hind Bank Marine Conservation District (MCD) and Virgin Islands Coral Reef National Monument (VICRNM).</p>
-</div>
-<div id="rugosity-by-mpa" class="section level2">
-<h2>Rugosity by MPA</h2>
-<pre><code>## 
-##  Welch Two Sample t-test
-## 
-## data:  filter(rugsum, MPA == &quot;MCD&quot;)$meanrug and filter(rugsum, MPA == &quot;MSR&quot;)$meanrug
-## t = 11.873, df = 63.381, p-value &lt; 2.2e-16
-## alternative hypothesis: true difference in means is not equal to 0
-## 95 percent confidence interval:
-##  53.63432 75.33913
-## sample estimates:
-## mean of x mean of y 
-##  102.5035   38.0168</code></pre>
-<div class="figure">
-<img src="rugosity_files/figure-html/rugDepth-1.png" alt="Mean rugosity (cm) of sites by depth of site (m). Shape indicates the MPA in which the site was located, and color indicates whether the site was inside or outside the MPA." width="720" />
-<p class="caption">
-Mean rugosity (cm) of sites by depth of site (m). Shape indicates the MPA in which the site was located, and color indicates whether the site was inside or outside the MPA.
-</p>
-</div>
-</div>
-<div id="lionfish" class="section level2">
-<h2>Lionfish</h2>
+<div id="trophic-groups" class="section level2">
+<h2>Trophic Groups</h2>
 <div id="density" class="section level3">
 <h3>Density</h3>
 <div class="figure">
-<img src="rugosity_files/figure-html/lionDensRug-1.png" alt="Lionfish density at sites by rugosity of site. Shape indicates the MPA in which the site was located, and color indicates whether the site was inside or outside the MPA." width="720" />
+<img src="timeseries_files/figure-html/densYear-1.png" alt="Density of all fish at sites over time. Shape indicates the MPA in which the site was located, and color indicates whether the site was inside or outside the MPA." width="720" />
 <p class="caption">
-Lionfish density at sites by rugosity of site. Shape indicates the MPA in which the site was located, and color indicates whether the site was inside or outside the MPA.
+Density of all fish at sites over time. Shape indicates the MPA in which the site was located, and color indicates whether the site was inside or outside the MPA.
+</p>
+</div>
+<div class="figure">
+<img src="timeseries_files/figure-html/densPeriod-1.png" alt="Mean density of trophic groups at sites over time. Shape indicates the MPA in which the site was located, and color indicates whether the site was inside or outside the MPA. Error bars represent mean &amp;plusmn; SE." width="672" />
+<p class="caption">
+Mean density of trophic groups at sites over time. Shape indicates the MPA in which the site was located, and color indicates whether the site was inside or outside the MPA. Error bars represent mean ± SE.
 </p>
 </div>
 </div>
 <div id="biomass" class="section level3">
 <h3>Biomass</h3>
 <div class="figure">
-<img src="rugosity_files/figure-html/lionBioRug-1.png" alt="Lionfish biomass at sites by rugosity of site. Shape indicates the MPA in which the site was located, and color indicates whether the site was inside or outside the MPA." width="720" />
+<img src="timeseries_files/figure-html/bioPeriod-1.png" alt="Mean biomass of trophic groups at sites over time. Shape indicates the MPA in which the site was located, and color indicates whether the site was inside or outside the MPA. Error bars represent mean &amp;plusmn; SE." width="672" />
 <p class="caption">
-Lionfish biomass at sites by rugosity of site. Shape indicates the MPA in which the site was located, and color indicates whether the site was inside or outside the MPA.
+Mean biomass of trophic groups at sites over time. Shape indicates the MPA in which the site was located, and color indicates whether the site was inside or outside the MPA. Error bars represent mean ± SE.
 </p>
 </div>
 </div>
 </div>
-<div id="all-fish" class="section level2">
-<h2>All fish</h2>
+<div id="groups-of-interest" class="section level2">
+<h2>Groups of Interest</h2>
 <div id="density-1" class="section level3">
 <h3>Density</h3>
 <div class="figure">
-<img src="rugosity_files/figure-html/allDens-1.png" alt="Total fish density at sites by rugosity. Shape indicates the MPA of the site, and color indicates whether the site was inside or outside the MPA." width="720" />
+<img src="timeseries_files/figure-html/groupDens-1.png" alt="Mean fish density (#/100m^2^) of groups of interest, summarized by time period, MPA, and inside/outside MPA boundaries. Error bars represent mean &amp;plusmn; SE. Shape represents the MPA in which the site was located, and color represents whether it was inside or outside MPA boundaries." width="768" />
 <p class="caption">
-Total fish density at sites by rugosity. Shape indicates the MPA of the site, and color indicates whether the site was inside or outside the MPA.
+Mean fish density (#/100m<sup>2</sup>) of groups of interest, summarized by time period, MPA, and inside/outside MPA boundaries. Error bars represent mean ± SE. Shape represents the MPA in which the site was located, and color represents whether it was inside or outside MPA boundaries.
 </p>
 </div>
 </div>
 <div id="biomass-1" class="section level3">
 <h3>Biomass</h3>
 <div class="figure">
-<img src="rugosity_files/figure-html/allBio-1.png" alt="Total fish biomass at sites by rugosity. Shape indicates the MPA of the site, and color indicates whether the site was inside or outside the MPA." width="720" />
+<img src="timeseries_files/figure-html/groupBio-1.png" alt="Mean fish biomass (kg/100m^2^) of groups of interest, summarized by time period, MPA, and inside/outside MPA boundaries. Error bars represent mean &amp;plusmn; SE. Shape represents the MPA in which the site was located, and color represents whether it was inside or outside MPA boundaries." width="768" />
 <p class="caption">
-Total fish biomass at sites by rugosity. Shape indicates the MPA of the site, and color indicates whether the site was inside or outside the MPA.
+Mean fish biomass (kg/100m<sup>2</sup>) of groups of interest, summarized by time period, MPA, and inside/outside MPA boundaries. Error bars represent mean ± SE. Shape represents the MPA in which the site was located, and color represents whether it was inside or outside MPA boundaries.
 </p>
 </div>
 </div>

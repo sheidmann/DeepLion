@@ -1,0 +1,272 @@
+---
+title: "Time Series"
+author: "Sarah Heidmann"
+date: "9/10/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r library, include=FALSE}
+# Load libraries
+library(tidyverse)
+library(knitr)
+```
+
+```{r dataImport, include=FALSE}
+# Import data
+mcd <- read_csv("data/MCD_historic_qaqc_rep.csv") %>%
+     add_column(period="historic")
+msr <- read_csv("data/MSR_historic_qaqc_rep.csv") %>%
+     mutate(period=ifelse(Year ==2011, NA, "historic"))
+dl <- read_csv("data/DeepLionFish_qaqc_20200413.csv") %>%
+     mutate(Year = as.integer(format(DateDone, "%Y"))) %>%
+     add_column(period = "modern")
+dlz <- read_csv("data/DeepLion_qaqc_zeros.csv") %>%
+     mutate(Year = as.integer(format(DateDone, "%Y"))) %>%
+     add_column(period="modern")
+lionz <- dlz %>% filter(ScientificName=="Pterois volitans")
+
+# Set colors
+mpaColors <- c("#E69F00", "#56B4E9")
+inoutColors <- c("#00BE6C","#F8766D")
+
+# Get names for groups of interest
+groupnames <- names(dl)[46:55]
+
+combonames <- c("Year","period","SiteID","MPA","InOut",
+                "ScientificName","CommonName","Family","Troph","Commercial",
+                "TotalNumber","TotalBiomass",groupnames)
+combo <- bind_rows(select(mcd,all_of(combonames)), 
+                   select(msr,all_of(combonames)), 
+                   select(dl,all_of(combonames)))
+```
+
+## Trophic Groups
+
+### Density
+```{r densYear, fig.width = 7.5, fig.height = 7, fig.cap="Density of all fish at sites over time. Shape indicates the MPA in which the site was located, and color indicates whether the site was inside or outside the MPA."}
+totalfish <- combo %>% 
+     filter(Family != "Gobiidae") %>%
+     group_by(SiteID, MPA, InOut, Year, period) %>%
+     summarize(totdens = sum(TotalNumber), .groups="drop")
+
+# Plot all sites at all years
+ggplot(aes(x= Year, y = totdens, color = InOut, shape = MPA, 
+           group=SiteID), data = totalfish) +
+      geom_point(size=4) +
+      geom_line() +
+      ylab(expression(paste("Total Density (#/100",m^2,")"))) +
+      scale_color_manual(values = inoutColors) +
+      scale_shape_manual(values = c(16,17)) +
+      theme(panel.background = element_blank(), legend.title = element_blank(),
+            axis.line = element_line(), text = element_text(size =16),
+            legend.position = "top")
+```
+
+```{r densPeriod, fig.width = 7, fig.height = 9, fig.cap="Mean density of trophic groups at sites over time. Shape indicates the MPA in which the site was located, and color indicates whether the site was inside or outside the MPA. Error bars represent mean &plusmn; SE."}
+totalsum <- combo %>%
+     group_by(MPA, InOut, period, SiteID) %>%
+     summarize(totdens = sum(TotalNumber), .groups="drop_last") %>%
+     summarize(meandens = mean(totdens),
+                  sd = sd(totdens),
+                  n = length(totdens), .groups="drop") %>%
+     mutate(sem = sd / sqrt(n)) %>%
+     na.omit() %>%
+     add_column(group="all fish")
+herbsum <- combo %>%
+     filter(Troph=="herbivore") %>%
+     group_by(MPA, InOut, period, SiteID) %>%
+     summarize(totdens = sum(TotalNumber), .groups="drop_last") %>%
+     summarize(meandens = mean(totdens),
+                  sd = sd(totdens),
+                  n = length(totdens), .groups="drop") %>%
+     mutate(sem = sd / sqrt(n)) %>%
+     na.omit() %>%
+     add_column(group="herbivores")
+piscsum <- combo %>%
+     filter(Troph=="piscivore") %>%
+     group_by(MPA, InOut, period, SiteID) %>%
+     summarize(totdens = sum(TotalNumber), .groups="drop_last") %>%
+     summarize(meandens = mean(totdens),
+                  sd = sd(totdens),
+                  n = length(totdens), .groups="drop") %>%
+     mutate(sem = sd / sqrt(n)) %>%
+     na.omit() %>%
+     add_column(group="piscivores")
+trophsum <- bind_rows(totalsum, herbsum, piscsum)
+
+ggplot(aes(x= period, y = meandens, color = InOut, shape = MPA, 
+                          group=interaction(MPA,InOut)), data = trophsum) +
+      geom_point(size=4,position=position_dodge(width=0.1)) +
+      geom_line(position=position_dodge(width=0.1)) +
+      geom_errorbar(aes(ymin=meandens-sem, ymax=meandens+sem),
+                    width=0.05,position=position_dodge(width=0.1)) +
+      xlab("") +
+      ylab(expression(paste("Mean Density (#/100",m^2,")"))) +
+      facet_wrap(~group, ncol=1) +
+      scale_x_discrete(labels=c("2003-2007","2018-2019")) +
+      scale_color_manual(values = inoutColors) +
+      scale_shape_manual(values = c(16,17)) +
+      theme(panel.background = element_blank(), legend.title = element_blank(),
+            axis.line = element_line(), text = element_text(size =16),
+            legend.position = "top")
+```
+
+### Biomass
+```{r bioPeriod, fig.width = 7, fig.height = 9, fig.cap="Mean biomass of trophic groups at sites over time. Shape indicates the MPA in which the site was located, and color indicates whether the site was inside or outside the MPA. Error bars represent mean &plusmn; SE."}
+totalbiosum <- combo %>%
+     group_by(MPA, InOut, period, SiteID) %>%
+     summarize(totbio = sum(TotalBiomass),
+               totbiokg = sum(TotalBiomass)/1000, .groups="drop_last") %>%
+     summarize(meanbiokg = mean(totbiokg),
+                  sd = sd(totbiokg),
+                  n = length(totbiokg), .groups="drop") %>%
+     mutate(sem = sd / sqrt(n)) %>%
+     na.omit() %>%
+     add_column(group="all fish")
+herbbiosum <- combo %>%
+     filter(Troph=="herbivore") %>%
+     group_by(MPA, InOut, period, SiteID) %>%
+     summarize(totbiokg = sum(TotalBiomass), .groups="drop_last") %>%
+     summarize(meanbiokg = mean(totbiokg),
+                  sd = sd(totbiokg),
+                  n = length(totbiokg), .groups="drop") %>%
+     mutate(sem = sd / sqrt(n)) %>%
+     na.omit() %>%
+     add_column(group="herbivores")
+piscbiosum <- combo %>%
+     filter(Troph=="piscivore") %>%
+     group_by(MPA, InOut, period, SiteID) %>%
+     summarize(totbiokg = sum(TotalBiomass), .groups="drop_last") %>%
+     summarize(meanbiokg = mean(totbiokg),
+                  sd = sd(totbiokg),
+                  n = length(totbiokg), .groups="drop") %>%
+     mutate(sem = sd / sqrt(n)) %>%
+     na.omit() %>%
+     add_column(group="piscivores")
+trophbiosum <- bind_rows(totalbiosum, herbbiosum, piscbiosum)
+
+ggplot(aes(x= period, y = meanbiokg, color = InOut, shape = MPA, 
+                          group=interaction(MPA,InOut)), data = trophbiosum) +
+      geom_point(size=4,position=position_dodge(width=0.1)) +
+      geom_line(position=position_dodge(width=0.1)) +
+      geom_errorbar(aes(ymin=meanbiokg-sem, ymax=meanbiokg+sem),
+                    width=0.05,position=position_dodge(width=0.1)) +
+      xlab("") +
+      ylab(expression(paste("Mean Biomass (kg/100",m^2,")"))) +
+      facet_wrap(~group, ncol=1) +
+      scale_x_discrete(labels=c("2003-2007","2018-2019")) +
+      scale_color_manual(values = inoutColors) +
+      scale_shape_manual(values = c(16,17)) +
+      theme(panel.background = element_blank(), legend.title = element_blank(),
+            axis.line = element_line(), text = element_text(size =16),
+            legend.position = "top")
+```
+
+## Groups of Interest
+
+### Density
+```{r groupDens, fig.width = 8, fig.height = 8, fig.cap="Mean fish density (#/100m^2^) of groups of interest, summarized by time period, MPA, and inside/outside MPA boundaries. Error bars represent mean &plusmn; SE. Shape represents the MPA in which the site was located, and color represents whether it was inside or outside MPA boundaries."}
+# Summarize lionfish first
+modernlion <- lionz %>%
+     filter(ScientificName=="Pterois volitans") %>% 
+     group_by(MPA, InOut, period, SiteID) %>%
+     summarize(liondens = sum(TotalNumber),
+               lionbiokg = sum(TotalBiomass), .groups="drop_last") %>%
+     summarize(group = "lionfish",
+                 meandens = mean(liondens),
+                 sddens = sd(liondens),
+                 ndens = length(liondens),
+                 meanbiokg = mean(lionbiokg),
+                 sdbio = sd(lionbiokg),
+                 nbio = length(lionbiokg), .groups="drop")
+lionsum <- data.frame(MPA = c(rep("MCD", each = 2), rep("VICRNM", each = 2)),
+                    InOut = rep(c("IN","OUT"), times = 2),
+                    period = "historic",
+                    group = "lionfish",
+                    meandens = 0,
+                    sddens = 0,
+                    ndens = c(455,0,764,971),
+                    meanbiokg = 0,
+                    sdbio = 0,
+                    nbio = c(455,0,764,971)) %>%
+     bind_rows(modernlion)
+# Summarize other groups
+groupsumdens <- combo %>%
+     select(c("SiteID", "MPA", "InOut","period"), 
+            groupnames[str_sub(groupnames,-8,-1) != ".biomass"]) %>%
+     pivot_longer(cols = groupnames[str_sub(groupnames,-8,-1) != ".biomass"],
+                  names_to = "group",
+                  values_to = "density") %>%
+     group_by(MPA, InOut, period, group) %>%
+     summarize(meandens = mean(density),
+                  sddens = sd(density),
+                  ndens = length(density), .groups="drop") %>%
+     na.omit()
+# Melt and ddply again for biomass
+groupsumbio <- combo %>%
+     select(c("SiteID", "MPA", "InOut","period"), 
+            groupnames[str_sub(groupnames,-8,-1) == ".biomass"]) %>%
+     pivot_longer(cols = groupnames[str_sub(groupnames,-8,-1) == ".biomass"],
+                  names_to = "group",
+                  values_to = "biomass") %>%
+     group_by(MPA, InOut, period, group) %>%
+     summarize(meanbiokg = mean(biomass/1000),
+                  sdbio = sd(biomass/1000),
+                  nbio = length(biomass/1000), .groups="drop") %>%
+     na.omit() %>%
+     mutate(group = str_sub(group,1,-9))
+
+# combine density and biomass together and add lionfish
+groupsum <- full_join(groupsumdens, groupsumbio, 
+                  by=c("MPA","InOut","period","group")) %>%
+     bind_rows(lionsum) %>%
+     mutate(semdens = sddens / sqrt(ndens),
+            sembio = sdbio / sqrt(nbio),
+            group = recode(group, 
+                           "LB.non.pred.non.comp"="Large-bodied non-predator",
+                           "LB.predator"="Large-bodied predator",
+                           "Non.Reef.Asso"="Non-reef associated",
+                           "SB.NonPrey"="Small-bodied non-prey",
+                           "SB.Prey"="Small-bodied prey",
+                           "lionfish"="Lionfish"))
+ggplot(aes(x= period, y = meandens, color = InOut, shape=MPA,
+           group = interaction(MPA,InOut)), data = groupsum) +
+      geom_point(size=4,position=position_dodge(width=0.1)) +
+      geom_line(position=position_dodge(width=0.1)) +
+      geom_errorbar(aes(ymin=meandens-semdens, ymax=meandens+semdens),
+                    width=0.05,position=position_dodge(width=0.1)) +
+      xlab("")+
+   ylab(expression(paste("Total Density (#/100",m^2,")"))) +
+      facet_wrap(~group,ncol=2, scales = "free_y") +
+      scale_x_discrete(labels=c("2003-2007","2018-2019")) +
+      scale_color_manual(values = inoutColors) +
+      scale_shape_manual(values = c(16,17)) +
+      theme(panel.background = element_blank(), legend.title = element_blank(),
+            axis.line = element_line(), text = element_text(size =16),
+            legend.position = "top")
+```
+
+
+### Biomass
+```{r groupBio, fig.width = 8, fig.height = 8, fig.cap="Mean fish biomass (kg/100m^2^) of groups of interest, summarized by time period, MPA, and inside/outside MPA boundaries. Error bars represent mean &plusmn; SE. Shape represents the MPA in which the site was located, and color represents whether it was inside or outside MPA boundaries."}
+ggplot(aes(x= period, y = meanbiokg, color = InOut, shape=MPA,
+           group = interaction(MPA,InOut)), data = groupsum) +
+   geom_point(size=4,position=position_dodge(width=0.1)) +
+   geom_line(position=position_dodge(width=0.1)) +
+   geom_errorbar(aes(ymin=meanbiokg-sembio, ymax=meanbiokg+sembio),
+                 width=0.05,position=position_dodge(width=0.1)) +
+   xlab("")+
+   ylab(expression(paste("Total Biomass (kg/100",m^2,")"))) +
+   facet_wrap(~group,ncol=2, scales = "free_y") +
+   scale_x_discrete(labels=c("2003-2007","2018-2019")) +
+   scale_color_manual(values = inoutColors) +
+   scale_shape_manual(values = c(16,17)) +
+   theme(panel.background = element_blank(), legend.title = element_blank(),
+         axis.line = element_line(), text = element_text(size =16),
+         legend.position = "top")
+```
+

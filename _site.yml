@@ -8,6 +8,8 @@ navbar:
       href: lionfish.html
     - text: "Rugosity"
       href: rugosity.html
+    - text: "Time Series"
+      href: timeseries.html
 output_dir: "docs"
 output:
   html_document:
