@@ -6,6 +6,8 @@ navbar:
       href: density_biomass.html
     - text: "Lionfish"
       href: lionfish.html
+    - text: "Rugosity"
+      href: rugosity.html
 output_dir: "docs"
 output:
   html_document:

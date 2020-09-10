@@ -12,7 +12,7 @@
 <meta name="author" content="Sarah Heidmann" />
 
 
-<title>Lionfish</title>
+<title>Rugosity</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -293,73 +293,72 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Lionfish</h1>
+<h1 class="title toc-ignore">Rugosity</h1>
 <h4 class="author">Sarah Heidmann</h4>
-<h4 class="date">9/9/2020</h4>
+<h4 class="date">9/10/2020</h4>
 
 </div>
 
 
 <div id="summary" class="section level2">
 <h2>Summary</h2>
-<p>This document examines density and biomass of fish communities inside and outside the boundaries of the Hind Bank Marine Conservation District (MCD) and Virgin Islands Coral Reef National Monument (VICRNM).</p>
+<p>This document examines patterns in fish communities as they relate to rugosity inside and outside the boundaries of the Hind Bank Marine Conservation District (MCD) and Virgin Islands Coral Reef National Monument (VICRNM).</p>
 </div>
-<div id="size-frequency" class="section level2">
-<h2>Size Frequency</h2>
-<div class="figure">
-<img src="lionfish_files/figure-html/sizefreq-1.png" alt="Size frequency distribution of lionfish, separated by MPA and inside/outside MPA boundaries." width="720" />
-<p class="caption">
-Size frequency distribution of lionfish, separated by MPA and inside/outside MPA boundaries.
-</p>
-</div>
-</div>
-<div id="depth-patterns" class="section level2">
-<h2>Depth Patterns</h2>
-<div id="size-with-depth" class="section level3">
-<h3>Size with Depth</h3>
-<div class="figure">
-<img src="lionfish_files/figure-html/depthSize-1.png" alt="Total length of all observed lionfish by depth at which each was observed, separated by MPA and inside/outside MPA boundaries." width="720" />
-<p class="caption">
-Total length of all observed lionfish by depth at which each was observed, separated by MPA and inside/outside MPA boundaries.
-</p>
-</div>
+<div id="rugosity-by-mpa" class="section level2">
+<h2>Rugosity by MPA</h2>
 <pre><code>## 
-## Call:
-## lm(formula = size ~ Zm_pos, data = lionsize)
+##  Welch Two Sample t-test
 ## 
-## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -13.9771  -6.8001   0.5285   3.5606  13.2376 
-## 
-## Coefficients:
-##             Estimate Std. Error t value Pr(&gt;|t|)   
-## (Intercept)  16.4034     5.1074   3.212  0.00208 **
-## Zm_pos        0.2358     0.1379   1.710  0.09223 . 
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 7.232 on 63 degrees of freedom
-## Multiple R-squared:  0.04434,    Adjusted R-squared:  0.02917 
-## F-statistic: 2.923 on 1 and 63 DF,  p-value: 0.09223</code></pre>
-</div>
-<div id="density-with-depth" class="section level3">
-<h3>Density with Depth</h3>
+## data:  filter(rugsum, MPA == &quot;MCD&quot;)$meanrug and filter(rugsum, MPA == &quot;MSR&quot;)$meanrug
+## t = 11.873, df = 63.381, p-value &lt; 2.2e-16
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  53.63432 75.33913
+## sample estimates:
+## mean of x mean of y 
+##  102.5035   38.0168</code></pre>
 <div class="figure">
-<img src="lionfish_files/figure-html/depthDensity-1.png" alt="Number of lionfish seen at each site by depth of the site, separated by MPA and inside/outside MPA boundaries." width="720" />
+<img src="rugosity_files/figure-html/rugDepth-1.png" alt="Mean rugosity (cm) of sites by depth of site (m). Shape indicates the MPA in which the site was located, and color indicates whether the site was inside or outside the MPA." width="720" />
 <p class="caption">
-Number of lionfish seen at each site by depth of the site, separated by MPA and inside/outside MPA boundaries.
+Mean rugosity (cm) of sites by depth of site (m). Shape indicates the MPA in which the site was located, and color indicates whether the site was inside or outside the MPA.
 </p>
 </div>
 </div>
-<div id="biomass-with-depth" class="section level3">
-<h3>Biomass with Depth</h3>
-<pre><code>## Warning: Removed 10 rows containing missing values (geom_smooth).</code></pre>
+<div id="lionfish" class="section level2">
+<h2>Lionfish</h2>
+<div id="density" class="section level3">
+<h3>Density</h3>
 <div class="figure">
-<img src="lionfish_files/figure-html/depthBiomass-1.png" alt="Biomass of lionfish seen at each site by depth of the site, separated by MPA and inside/outside MPA boundaries." width="720" />
+<img src="rugosity_files/figure-html/lionDensRug-1.png" alt="Lionfish density at sites by rugosity of site. Shape indicates the MPA in which the site was located, and color indicates whether the site was inside or outside the MPA." width="720" />
 <p class="caption">
-Biomass of lionfish seen at each site by depth of the site, separated by MPA and inside/outside MPA boundaries.
+Lionfish density at sites by rugosity of site. Shape indicates the MPA in which the site was located, and color indicates whether the site was inside or outside the MPA.
 </p>
 </div>
+</div>
+<div id="biomass" class="section level3">
+<h3>Biomass</h3>
+<div class="figure">
+<img src="rugosity_files/figure-html/lionBioRug-1.png" alt="Lionfish biomass at sites by rugosity of site. Shape indicates the MPA in which the site was located, and color indicates whether the site was inside or outside the MPA." width="720" />
+<p class="caption">
+Lionfish biomass at sites by rugosity of site. Shape indicates the MPA in which the site was located, and color indicates whether the site was inside or outside the MPA.
+</p>
+</div>
+</div>
+</div>
+<div id="all-fish" class="section level2">
+<h2>All fish</h2>
+<div id="density-1" class="section level3">
+<h3>Density</h3>
+<div class="figure">
+<img src="rugosity_files/figure-html/allDens-1.png" alt="Total fish density (#/100m2) of sites by rugosity (cm). Shape indicates the MPA of the site, and color indicates whether the site was inside or outside the MPA." width="720" />
+<p class="caption">
+Total fish density (#/100m2) of sites by rugosity (cm). Shape indicates the MPA of the site, and color indicates whether the site was inside or outside the MPA.
+</p>
+</div>
+</div>
+<div id="biomass-1" class="section level3">
+<h3>Biomass</h3>
+<p><img src="rugosity_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
 </div>
 </div>
 

@@ -1,0 +1,132 @@
+---
+title: "Rugosity"
+author: "Sarah Heidmann"
+date: "9/10/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+```{r library, include=FALSE}
+# Load libraries
+library(tidyverse)
+library(knitr)
+```
+```{r dataImport, include=FALSE}
+# Import data
+dl <- read_csv("data/DeepLionFish_qaqc_20200413.csv")
+rug <- read_csv("data/DL20180725_Relief_Master.csv")
+
+# Set colors
+mpaColors <- c("#E69F00", "#56B4E9")
+inoutColors <- c("#00BE6C","#F8766D")
+```
+
+## Summary
+
+This document examines patterns in fish communities as they relate to rugosity inside and outside the boundaries of the Hind Bank Marine Conservation District (MCD) and Virgin Islands Coral Reef National Monument (VICRNM).
+
+## Rugosity by MPA
+
+```{r testMPA}
+rugsum <- rug %>%
+     rename(SiteID=LOCATION) %>%
+     group_by(SiteID,`IN/OUT`,MPA) %>%
+     summarize(meanrug = mean(`RELIEF (cm)`, na.rm=T),
+                n = sum(!(is.na(`RELIEF (cm)`))),
+                sd = sd(`RELIEF (cm)`,na.rm=T), .groups="drop") %>%
+     left_join(., unique(select(dl, SiteID,Zm)), by="SiteID") %>%
+     mutate(Zm_pos = - Zm)
+t.test(filter(rugsum,MPA=="MCD")$meanrug, filter(rugsum,MPA=="MSR")$meanrug, 
+       alternative = "two.sided", var.equal = FALSE)
+```
+
+```{r rugDepth, message=FALSE, fig.width = 7.5, fig.height = 7, fig.cap="Mean rugosity (cm) of sites by depth of site (m). Shape indicates the MPA in which the site was located, and color indicates whether the site was inside or outside the MPA."}
+ggplot(data=rugsum, aes(x=Zm_pos,y=meanrug)) +
+   geom_point(aes(shape=MPA,color=`IN/OUT`), size=4, na.rm=T) +
+   #geom_smooth(method="lm",group=1)+
+   geom_smooth(method='loess', formula=y~x, na.rm=T) +
+   xlab("Depth (m)") +
+   ylab("Mean Rugosity (cm)") +
+   scale_x_continuous(breaks = seq(10,50,10), labels = seq(10,50,10))+
+   scale_color_manual("",values = inoutColors) +
+   scale_shape_manual("MPA", labels = c("MCD","VICRNM"), values = c(16,17)) +
+   theme(panel.background=element_blank(), text = element_text(size=16),
+         axis.line=element_line())
+```
+
+## Lionfish
+
+### Density 
+
+```{r lionDensRug, fig.width = 7.5, fig.height = 7, fig.cap="Lionfish density at sites by rugosity of site. Shape indicates the MPA in which the site was located, and color indicates whether the site was inside or outside the MPA."}
+lion <- dl %>% filter(ScientificName=="Pterois volitans") %>%
+     mutate(Zm_pos = - Zm) %>%
+     select(SiteID, TotalNumber,TotalBiomass) %>%
+     right_join(rugsum, by="SiteID") %>%
+     replace_na(list(TotalNumber=0,TotalBiomass=0))
+
+
+ggplot(data=lion, aes(x=meanrug,y=TotalNumber)) +
+      geom_point(aes(shape=MPA,color=`IN/OUT`), size=4, na.rm=T) +
+      geom_smooth(method="lm",group=1,formula=y~x, na.rm=T)+
+      xlab("Mean Rugosity (cm)") +
+      ylab(expression(paste("Lionfish Density (#/100",m^2,")"))) +
+      scale_color_manual("",values = inoutColors) +
+      scale_shape_manual("MPA", values = c(16,17), labels = c("MCD","VICRNM")) +
+      theme(panel.background=element_blank(), text = element_text(size=16),
+            axis.line=element_line())
+```
+
+### Biomass
+
+```{r lionBioRug, fig.width = 7.5, fig.height = 7, fig.cap="Lionfish biomass at sites by rugosity of site. Shape indicates the MPA in which the site was located, and color indicates whether the site was inside or outside the MPA."}
+
+ggplot(data=lion, aes(x=meanrug,y=TotalBiomass)) +
+      geom_point(aes(shape=MPA,color=`IN/OUT`), size=4, na.rm=T) +
+      geom_smooth(method="lm",group=1,formula=y~x, na.rm=T)+
+      xlab("Mean Rugosity (cm)") +
+      ylab(expression(paste("Lionfish Biomass (g/100",m^2,")"))) +
+      scale_color_manual("",values = inoutColors) +
+      scale_shape_manual("MPA", values = c(16,17), labels = c("MCD","VICRNM")) +
+      theme(panel.background=element_blank(), text = element_text(size=16),
+            axis.line=element_line())
+```
+
+## All fish
+
+### Density
+
+```{r allDens, fig.width = 7.5, fig.height = 7, fig.cap="Total fish density (#/100m2) of sites by rugosity (cm). Shape indicates the MPA of the site, and color indicates whether the site was inside or outside the MPA."}
+totalrug <- dl %>% group_by(SiteID) %>%
+     summarize(TotalNumber = sum(TotalNumber),
+                  TotalBiomasskg = sum(TotalBiomass)/1000, .groups="drop") %>%
+     right_join(rugsum, by="SiteID")
+
+ggplot(data=totalrug, aes(x=meanrug,y=TotalNumber)) +
+      geom_point(size=4, aes(shape=MPA,color=`IN/OUT`), na.rm=T) +
+      geom_smooth(method="lm", group=1, formula=y~x, na.rm=T)+
+      xlab("Mean Rugosity (cm)") +
+    ylab(expression(paste("Total Fish Density (#/100",m^2,")"))) +
+      scale_color_manual("",values = inoutColors) +
+      scale_shape_manual("MPA", values = c(16,17), labels = c("MCD","VICRNM")) +
+      theme(panel.background=element_blank(), text = element_text(size=16),
+            axis.line=element_line())
+
+```
+
+### Biomass
+
+```{r}
+ggplot(data=totalrug, aes(x=meanrug,y=TotalBiomasskg)) +
+      geom_point(size=4, aes(shape=MPA,color=`IN/OUT`), na.rm=T) +
+      geom_smooth(method="lm",group=1,formula=y~x, na.rm=T)+
+      xlab("Mean Rugosity (cm)") +
+   ylab(expression(paste("Total Fish Biomass (kg/100",m^2,")"))) +
+      scale_color_manual("",values = inoutColors) +
+      scale_shape_manual("MPA", values = c(16,17), labels = c("MCD","VICRNM")) +
+      theme(panel.background=element_blank(), text = element_text(size=16),
+            axis.line=element_line())
+```
+
