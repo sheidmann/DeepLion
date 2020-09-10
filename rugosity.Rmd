@@ -98,7 +98,7 @@ ggplot(data=lion, aes(x=meanrug,y=TotalBiomass)) +
 
 ### Density
 
-```{r allDens, fig.width = 7.5, fig.height = 7, fig.cap="Total fish density (#/100m2) of sites by rugosity (cm). Shape indicates the MPA of the site, and color indicates whether the site was inside or outside the MPA."}
+```{r allDens, fig.width = 7.5, fig.height = 7, fig.cap="Total fish density at sites by rugosity. Shape indicates the MPA of the site, and color indicates whether the site was inside or outside the MPA."}
 totalrug <- dl %>% group_by(SiteID) %>%
      summarize(TotalNumber = sum(TotalNumber),
                   TotalBiomasskg = sum(TotalBiomass)/1000, .groups="drop") %>%
@@ -118,7 +118,7 @@ ggplot(data=totalrug, aes(x=meanrug,y=TotalNumber)) +
 
 ### Biomass
 
-```{r}
+```{r allBio, fig.width = 7.5, fig.height = 7, fig.cap="Total fish biomass at sites by rugosity. Shape indicates the MPA of the site, and color indicates whether the site was inside or outside the MPA."}
 ggplot(data=totalrug, aes(x=meanrug,y=TotalBiomasskg)) +
       geom_point(size=4, aes(shape=MPA,color=`IN/OUT`), na.rm=T) +
       geom_smooth(method="lm",group=1,formula=y~x, na.rm=T)+
