@@ -29,12 +29,18 @@ This document examines density and biomass of fish communities inside and outsid
 ## Size Frequency
 
 ```{r sizefreq, fig.width = 7.5, fig.height = 7, fig.cap="Size frequency distribution of lionfish, separated by MPA and inside/outside MPA boundaries."}
-ggplot(data=lionsize, aes(x=size, fill = InOut)) +
-   geom_histogram(breaks=c(0,5,seq(10,40,10)), color = "black") +
+lionsize %>% 
+   mutate(size=as.factor(size)) %>% 
+   add_column(count=1) %>%
+   complete(size, nesting(MPA, InOut), fill=list(count=0)) %>%
+   group_by(MPA,InOut,size) %>% 
+   summarize(total = sum(count), .groups="drop") %>%
+ggplot(data=., aes(x=size, y=total,fill = InOut)) +
+   geom_bar(color = "black",position = "dodge", stat="identity") +
    scale_fill_manual("",values = inoutColors) +
    xlab("Size (cm)") +
    ylab("Frequency") +
-   scale_x_continuous(limits = c(0,40)) +
+   scale_x_discrete(labels = c("6-10","11-20","21-30","31-40")) +
    scale_y_continuous(expand=c(0,0)) +
    facet_wrap(~MPA,ncol=1) +
    theme(panel.background = element_blank(), axis.line=element_line(),
