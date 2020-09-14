@@ -1,0 +1,337 @@
+---
+title: "Community"
+author: "Sarah Heidmann"
+date: "9/14/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r library, include=FALSE}
+# Load libraries
+library(tidyverse)
+library(knitr)
+library(vegan)
+```
+```{r dataImport, include=FALSE}
+# Import data
+dl <- read_csv("data/DeepLionFish_qaqc_20200413.csv")
+# Set colors
+mpaColors <- c("#E69F00", "#56B4E9")
+inoutColors <- c("#00BE6C","#F8766D")
+allcolors <- c("MCD"="#E69F00","VICRNM"="#56B4E9",
+               "IN"="#00BE6C","OUT"="#F8766D")
+grouplabels <- c("LB.non.pred.non.comp"="Large-bodied non-predator",
+                 "LB.predator"="Large-bodied predator",
+                 "Non.Reef.Asso"="Non-reef associated",
+                 "SB.NonPrey"="Small-bodied non-prey",
+                 "SB.Prey"="Small-bodied prey",
+                 "Lion"="Lionfish")
+```
+
+## Summary
+
+This document examines fish community composition inside and outside the boundaries of the Hind Bank Marine Conservation District (MCD) and Virgin Islands Coral Reef National Monument (VICRNM).
+
+## Density and biomass of groups of interest by site
+
+First we need to calculate the density (#/100m^2^) and biomass (g/100m^2^) of each group at each site.
+
+The code below does the following:
+
+1. Create columns for lionfish
+2. Remove unnecessary columns
+3. Group by site, MPA, and in/out location
+4. Calculate the sum of each group's density and biomass
+
+```{r groupSiteSum}
+groupsitesum <- dl %>%
+     mutate(Lion=ifelse(ScientificName=="Pterois volitans", TotalNumber, 0),
+            Lion.biomass=ifelse(ScientificName=="Pterois volitans", TotalBiomass, 0)) %>%
+     select(SiteID,MPA,InOut,
+            all_of(names(grouplabels)), 
+            all_of(paste0(names(grouplabels),".biomass"))) %>%
+     group_by(SiteID, MPA, InOut) %>%
+     summarise(across(everything(), sum), .groups="drop")
+```
+
+This table is the first 6 rows of the result:
+
+```{r groupSiteSumTab, echo=FALSE}
+kable(head(groupsitesum), digits=0, align = "c",
+      col.names = c("Site", "MPA","Location",
+                    paste0(grouplabels, " Density"), paste0(grouplabels," Biomass")),
+      caption = "Total density (#/100m^2^) and biomass (g/100m^2^) of groups of interest across sites (first 6 rows).")
+```
+
+
+### NMDS for density of groups
+
+The code below creates a matrix of densities of groups of interest at each site, using that to create an NMDS and the associated stressplot.
+
+```{r groupDens}
+density_matrix <- as.matrix(groupsitesum[names(grouplabels)])
+dimnames(density_matrix) <- list(as.character(groupsitesum$SiteID), names(grouplabels))
+#dens_dist <- vegdist(density_matrix, method="jaccard")
+dens_NMDS <- metaMDS(density_matrix, distance="jaccard", k=2)
+stressplot(dens_NMDS)
+```
+
+The fit is good with fairly low stress.
+
+The following code converts the NMDS into a data frame and plots it.
+
+```{r groupDensPlot, fig.width = 7.5, fig.height = 7, fig.cap="NMDS plot of density of various functional groups of interest by MPA. Groups were adapted from Green et al (2012). Ellipses represent 95% groupings by MPA (inside and outside combined for each MPA)."}
+dens_sites <- as.data.frame(scores(dens_NMDS))
+dens_sites$site <- rownames(dens_sites)
+dens_sites$mpa <- groupsitesum$MPA
+dens_sites$inout <- groupsitesum$InOut
+
+dens_species <- as.data.frame(scores(dens_NMDS, display="species"))
+dens_species$species <- rownames(dens_species)
+dens_species$specieslabels <- grouplabels
+
+ggplot() + 
+   geom_label(data=dens_species,aes(x=NMDS1,y=NMDS2,label=gsub(" ","\n", specieslabels)),
+             size=6,alpha=0.5) +
+   geom_point(data=dens_sites,aes(x=NMDS1,y=NMDS2,shape=mpa,color=mpa),size=3) +
+   #geom_text(data=dens_sites,aes(x=NMDS1,y=NMDS2,label=site),size=6,vjust=0) +
+   stat_ellipse(data=dens_sites, aes(x=NMDS1,y=NMDS2,color=mpa), 
+                level = 0.95) +   
+   stat_ellipse(data=dens_sites, aes(x=NMDS1,y=NMDS2,color=inout), 
+                level = 0.95) +
+   scale_color_manual("", values=allcolors,
+                      breaks=c("MCD","VICRNM","IN","OUT"),
+                      labels=c("MCD","VICRNM","IN","OUT")) +
+   scale_shape_manual("", values = c(16,17)) +
+     scale_x_continuous(limits=c(-1.25,1.5)) +
+   theme(text=element_text(size=16), panel.background = element_blank(),
+            axis.line=element_line())
+```
+
+We can follow up the NMDS with a PERMANOVA.
+
+```{r groupDensTest}
+dens_perm <- adonis2(density_matrix ~ paste(MPA,InOut), data = groupsitesum)
+dens_perm
+perm_p <- dens_perm$`Pr(>F)`[1]
+```
+Locations (in terms of MPA and in/out) are different in their density of groups of interest (df=`r dens_perm$Df[1]`, p=`r perm_p`). Since the PERMANOVA was significant, we can do a SIMPER analysis to see which groups are contributing the most to differences.
+
+```{r groupDensTest2}
+dens_sim <- with(groupsitesum, simper(density_matrix, paste(MPA,InOut)))
+summary(dens_sim)
+dens_sim
+```
+
+SIMPER analysis showed the largest contributor to these differences is small-bodied prey, accounting for 78-84% of the differences between locations.
+
+### NMDS for biomass of groups
+
+The code below creates a matrix of biomass of groups of interest at each site, using that to create an NMDS and the associated stressplot.
+
+```{r groupBio}
+biomass_matrix <- as.matrix(groupsitesum[paste0(names(grouplabels),".biomass")])
+dimnames(biomass_matrix) <- list(as.character(groupsitesum$SiteID), 
+                                 paste0(names(grouplabels),".biomass"))
+bio_NMDS <- metaMDS(biomass_matrix, distance="jaccard", k=2)
+stressplot(bio_NMDS)
+```
+
+The following code converts the NMDS into a data frame and plots it.
+
+```{r groupBioPlot, fig.width = 7.5, fig.height = 7, fig.cap="NMDS plot of biomass of various functional groups of interest by MPA. Groups were adapted from Green et al (2012). Ellipses represent 95% groupings by MPA (inside and outside combined for each MPA)."}
+bio_sites <- as.data.frame(scores(bio_NMDS))
+bio_sites$site <- rownames(bio_sites)
+bio_sites$mpa <- groupsitesum$MPA
+bio_sites$inout <- groupsitesum$InOut
+
+bio_species <- as.data.frame(scores(bio_NMDS, "species"))
+bio_species$species <- rownames(bio_species)
+bio_species$specieslabels <- grouplabels
+
+ggplot() + 
+      geom_label(data=bio_species,aes(x=NMDS1,y=NMDS2,label=gsub(" ","\n", specieslabels)),
+                size=6,alpha=0.5) +
+      geom_point(data=bio_sites,aes(x=NMDS1,y=NMDS2,shape=mpa,color=mpa),size=3) +
+      #geom_text(data=bio_sites,aes(x=NMDS1,y=NMDS2,label=site),size=6,vjust=0) +
+   scale_color_manual("", values=allcolors,
+                      breaks=c("MCD","VICRNM","IN","OUT"),
+                      labels=c("MCD","VICRNM","IN","OUT")) +
+      scale_shape_manual("", values = c(16,17)) +
+      stat_ellipse(data=bio_sites, aes(x=NMDS1,y=NMDS2,color=mpa), 
+                   level = 0.95) +
+   stat_ellipse(data=bio_sites, aes(x=NMDS1,y=NMDS2,color=inout), 
+                level = 0.95) +
+      #scale_x_continuous(limits=c(-1.7,1.1))+
+      theme(text=element_text(size=16), panel.background = element_blank(),
+            axis.line=element_line())
+```
+
+We can follow up the NMDS with a PERMANOVA.
+
+```{r groupBioTest}
+bio_perm <- adonis2(biomass_matrix ~ paste(MPA,InOut), data = groupsitesum)
+bio_perm
+```
+
+Since the PERMANOVA is not significant, we don't need to do a SIMPER.
+
+## Density and biomass of trophic groups by site
+
+First we need to calculate the density (#/100m^2^) and biomass (g/100m^2^) of each trophic group at each site.
+
+```{r trophsiteSum}
+trophsitesum <- dl %>%
+     group_by(SiteID, MPA, InOut, Troph) %>%
+     summarize(TotalNumber=sum(TotalNumber),
+               TotalBiomass=sum(TotalBiomass), .groups="drop")
+trophdens <- trophsitesum %>% 
+     pivot_wider(id_cols=c(SiteID, MPA,InOut), 
+                 names_from = Troph, values_from = TotalNumber,
+                 values_fill = 0)
+trophbio <- trophsitesum %>% 
+     pivot_wider(id_cols=c(SiteID, MPA,InOut), 
+                 names_from = Troph, values_from = TotalBiomass,
+                 values_fill = 0)
+```
+
+This table is the first 6 rows of the resulting tables:
+
+```{r trophSiteSumTabs, echo = FALSE}
+kable(head(trophdens), digits=0, align = "c",
+      col.names = c("Site", "MPA","Location", "Herbivore","Invertivore","Piscivore","Planktivore"),
+      caption = "Total density (#/100m^2^) of trophic groups across sites (first 6 rows).")
+kable(head(trophbio), digits=0, align = "c",
+      col.names = c("Site", "MPA","Location", "Herbivore","Invertivore","Piscivore","Planktivore"),
+      caption = "Total biomass (g/100m^2^) of trophic groups across sites (first 6 rows).")
+```
+
+### NMDS for density of trophic groups
+
+```{r trophDens}
+trophdensmatrix <- as.matrix(trophdens[,levels(as.factor(dl$Troph))])
+dimnames(trophdensmatrix) <- list(as.character(trophdens$SiteID), 
+                                  as.character(levels(as.factor(dl$Troph))))
+
+trophdens_NMDS <- metaMDS(trophdensmatrix, distance="jaccard", k=2)
+stressplot(trophdens_NMDS)
+```
+
+```{r trophDensPlot, fig.width = 7.5, fig.height = 7, fig.cap="NMDS plot of density of trophic groups by MPA. Ellipses represent 95% groupings by MPA (inside and outside combined for each MPA)."}
+trophdens_sites <- as.data.frame(scores(trophdens_NMDS))
+trophdens_sites$site <- rownames(trophdens_sites)
+trophdens_sites$mpa <- trophdens$MPA
+trophdens_sites$inout <- trophdens$InOut
+
+trophdens_species <- as.data.frame(scores(trophdens_NMDS, "species"))
+trophdens_species$species <- rownames(trophdens_species)
+
+ggplot() + 
+      geom_label(data=trophdens_species,aes(x=NMDS1,y=NMDS2,label=species),
+                size=6,alpha=0.5) +
+      geom_point(data=trophdens_sites,aes(x=NMDS1,y=NMDS2,shape=mpa,color=mpa),size=3) +
+   scale_color_manual("", values=allcolors,
+                      breaks=c("MCD","VICRNM","IN","OUT"),
+                      labels=c("MCD","VICRNM","IN","OUT")) +
+      scale_shape_manual("", values = c(16,17)) +
+      stat_ellipse(data=trophdens_sites, aes(x=NMDS1,y=NMDS2,color=mpa), 
+                   level = 0.95) +
+   stat_ellipse(data=trophdens_sites, aes(x=NMDS1,y=NMDS2,color=inout), 
+                level = 0.95) +
+      theme(text=element_text(size=16), panel.background = element_blank(),
+            axis.line=element_line())
+
+```
+
+We can follow up the NMDS with a PERMANOVA.
+
+```{r trophDensTest}
+trophdens_perm <- adonis2(trophdensmatrix ~ paste(MPA,InOut), data = trophdens)
+trophdens_perm
+trophdensperm_p <- trophdens_perm$`Pr(>F)`[1]
+
+```
+
+Locations (in terms of MPA and in/out) are different in their density of trophic groups (df=`r trophdens_perm$Df[1]`, p=`r trophdensperm_p`). Since the PERMANOVA was significant, we can do a SIMPER analysis to see which groups are contributing the most to differences.
+```{r trophDensTest2}
+trophdenssim <- with(trophdens, simper(trophdensmatrix, paste(MPA,InOut)))
+trophdenssim
+```
+
+Herbivores and invertivores contribute the most to differences in fish density across sites.
+
+### NMDS for biomass of trophic groups
+
+```{r trophBio}
+trophbiomatrix <- as.matrix(trophbio[,levels(as.factor(dl$Troph))])
+dimnames(trophbiomatrix) <- list(as.character(trophbio$SiteID), 
+                                  as.character(levels(as.factor(dl$Troph))))
+
+trophbio_NMDS <- metaMDS(trophbiomatrix, distance = "jaccard", k=2)
+stressplot(trophbio_NMDS)
+
+```
+
+```{r trophBioPlot}
+trophbio_sites <- as.data.frame(scores(trophbio_NMDS))
+trophbio_sites$site <- rownames(trophbio_sites)
+trophbio_sites$mpa <- trophbio$MPA
+trophbio_sites$inout <- trophbio$InOut
+
+trophbio_species <- as.data.frame(scores(trophbio_NMDS, "species"))
+trophbio_species$species <- rownames(trophbio_species)
+
+ggplot() + 
+   geom_label(data=trophbio_species,aes(x=NMDS1,y=NMDS2,label=species),
+             size=6,alpha=0.5) +
+   geom_point(data=trophbio_sites,aes(x=NMDS1,y=NMDS2,shape=mpa,color=mpa),size=3) +
+   #geom_text(data=trophbio_sites,aes(x=NMDS1,y=NMDS2,label=site),size=6,vjust=0) +
+   scale_color_manual("", values=allcolors,
+                      breaks=c("MCD","VICRNM","IN","OUT"),
+                      labels=c("MCD","VICRNM","IN","OUT")) +
+   scale_shape_manual("", values = c(16,17)) +
+   stat_ellipse(data=trophbio_sites, aes(x=NMDS1,y=NMDS2,color=mpa), 
+                level = 0.95) +
+   stat_ellipse(data=trophbio_sites, aes(x=NMDS1,y=NMDS2,color=inout), 
+                level = 0.95) +
+   theme(text=element_text(size=20), panel.background = element_blank(),
+         axis.line=element_line())
+```
+
+We can follow up the NMDS with a PERMANOVA.
+
+```{r trophBioTest}
+trophbio_perm <- adonis2(trophbiomatrix ~ paste(MPA,InOut), data = trophbio)
+trophbio_perm
+```
+
+Locations (in terms of MPA and in/out) are different in their density of trophic groups (df=`r trophdens_perm$Df[1]`, p=`r trophdensperm_p`). Since the PERMANOVA was significant, we can do a SIMPER analysis to see which groups are contributing the most to differences.
+
+```{r trophBioTest2}
+trophbiosim <- with(trophbio, simper(trophbiomatrix, paste(MPA,InOut)))
+trophbiosim
+```
+
+Invertivores, piscivores, and herbivores all contribute significantly to differences in biomass across sites.
+
+## Commercially Important Species
+```{r comSiteSum}
+comsum <- dl %>%
+     filter(Commercial=="Y") %>%
+     group_by(SiteID, MPA, InOut, ScientificName) %>%
+     summarize(TotalNumber=sum(TotalNumber),
+               TotalBiomass=sum(TotalBiomass), .groups="drop")
+comdens <- comsum %>%
+     pivot_wider(id_cols=c(SiteID, MPA,InOut), 
+                 names_from = ScientificName, values_from = TotalNumber,
+                 values_fill = 0)
+```
+```{r comSiteTab, echo=FALSE}
+kable(head(comdens), digits=0, align = "c",
+      caption = "Mean density (#/100m^2^) of commercially-important species across sites (first 6 rows).")
+```
+
+There are too many zeros in this dataset for an NMDS to work.

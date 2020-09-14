@@ -10,6 +10,8 @@ navbar:
       href: rugosity.html
     - text: "Time Series"
       href: timeseries.html
+    - text: "Community"
+      href: community.html
 output_dir: "docs"
 output:
   html_document:
