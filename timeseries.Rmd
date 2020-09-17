@@ -10,7 +10,6 @@ knitr::opts_chunk$set(echo = FALSE)
 ```
 
 ```{r library, include=FALSE}
-# Load libraries
 library(tidyverse)
 library(knitr)
 ```
@@ -47,7 +46,7 @@ combo <- bind_rows(select(mcd,all_of(combonames)),
 ## Trophic Groups
 
 ### Density
-```{r densYear, fig.width = 7.5, fig.height = 7, fig.cap="Density of all fish at sites over time. Shape indicates the MPA in which the site was located, and color indicates whether the site was inside or outside the MPA."}
+```{r densYear, fig.width = 7.5, fig.height = 7, fig.cap="Density of all fish at sites over time. Lines connect the same site over time. Shape indicates the MPA in which the site was located, and color indicates whether the site was inside or outside the MPA."}
 totalfish <- combo %>% 
      filter(Family != "Gobiidae") %>%
      group_by(SiteID, MPA, InOut, Year, period) %>%
@@ -66,8 +65,11 @@ ggplot(aes(x= Year, y = totdens, color = InOut, shape = MPA,
             legend.position = "top")
 ```
 
+Historic surveying of VICRNM sites occurred over a period of 5 years, with sites surveyed 1-3 times, and a few sites being additionally resurveyed in 2011. Due to the inconsistency in survey repetition across sites, surveys occurring 2003-2007 were considered "historic", and surveys occuring 2018-2019 were considered "modern".
+
 ```{r densPeriod, fig.width = 7, fig.height = 9, fig.cap="Mean density of trophic groups at sites over time. Shape indicates the MPA in which the site was located, and color indicates whether the site was inside or outside the MPA. Error bars represent mean &plusmn; SE."}
 totalsum <- combo %>%
+   filter(Family != "Gobiidae") %>%
      group_by(MPA, InOut, period, SiteID) %>%
      summarize(totdens = sum(TotalNumber), .groups="drop_last") %>%
      summarize(meandens = mean(totdens),
@@ -88,6 +90,7 @@ herbsum <- combo %>%
      add_column(group="herbivores")
 piscsum <- combo %>%
      filter(Troph=="piscivore") %>%
+   #filter(SiteID !="MSR205") %>%
      group_by(MPA, InOut, period, SiteID) %>%
      summarize(totdens = sum(TotalNumber), .groups="drop_last") %>%
      summarize(meandens = mean(totdens),
@@ -106,7 +109,7 @@ ggplot(aes(x= period, y = meandens, color = InOut, shape = MPA,
                     width=0.05,position=position_dodge(width=0.1)) +
       xlab("") +
       ylab(expression(paste("Mean Density (#/100",m^2,")"))) +
-      facet_wrap(~group, ncol=1) +
+      facet_wrap(~group, ncol=1, scales="free_y") +
       scale_x_discrete(labels=c("2003-2007","2018-2019")) +
       scale_color_manual(values = inoutColors) +
       scale_shape_manual(values = c(16,17)) +
@@ -114,6 +117,9 @@ ggplot(aes(x= period, y = meandens, color = InOut, shape = MPA,
             axis.line = element_line(), text = element_text(size =16),
             legend.position = "top")
 ```
+
+Mean density of trophic groups at most locations stayed fairly steady over time. Gobies were removed from these numbers, as large numbers of masked gobies were recorded in historic VICRNM surveys. The most notable change occured outside the VICRNM, with a sharp decrease in total fish density between historic and modern sampling. Upon closer examination, this change was due to a historic presence of large schools of fish at many sites, from species such as bluehead wrasse, creole wrasse, blue chromis, and boga, that did not occur as often during modern surveys. There was also a notable decrease in herbivores outside the VICRNM over time.
+The large error bar for piscivores in modern surveys outside the VICRNM is heavily influenced by the presence of a large school of horse-eye jack at a single site.
 
 ### Biomass
 ```{r bioPeriod, fig.width = 7, fig.height = 9, fig.cap="Mean biomass of trophic groups at sites over time. Shape indicates the MPA in which the site was located, and color indicates whether the site was inside or outside the MPA. Error bars represent mean &plusmn; SE."}
@@ -157,7 +163,7 @@ ggplot(aes(x= period, y = meanbiokg, color = InOut, shape = MPA,
                     width=0.05,position=position_dodge(width=0.1)) +
       xlab("") +
       ylab(expression(paste("Mean Biomass (kg/100",m^2,")"))) +
-      facet_wrap(~group, ncol=1) +
+      facet_wrap(~group, ncol=1, scales="free_y") +
       scale_x_discrete(labels=c("2003-2007","2018-2019")) +
       scale_color_manual(values = inoutColors) +
       scale_shape_manual(values = c(16,17)) +
@@ -165,6 +171,8 @@ ggplot(aes(x= period, y = meanbiokg, color = InOut, shape = MPA,
             axis.line = element_line(), text = element_text(size =16),
             legend.position = "top")
 ```
+
+There was high variation in biomass of trophic groups, such that there are no apparent trends in fish biomass over time, with the exception of the decrease in total biomass outside the VICRNM, due to the schools of fish that influenced the decrease in density.
 
 ## Groups of Interest
 
@@ -270,3 +278,5 @@ ggplot(aes(x= period, y = meanbiokg, color = InOut, shape=MPA,
          legend.position = "top")
 ```
 
+No lionfish were observed during historic surveys, which was the most notable pattern over time. Large-bodied non-predators increased over time, while large-bodied predators had a less clear pattern. Small-bodied prey and non-prey both decreased over time outside the VICRNM, and non-prey also decreased inside the VICRNM. This change is most likely due to differences in diver recording rather than an ecological change, with modern surveys being more likely to ignore gobies.
+The largest contributors to small-bodied density were masked gobies, small bluehead wrasse, and blue chromis, while the largest contributors to small-bodied biomass were creole wrasse, boga, and blue chromis.

@@ -76,6 +76,8 @@ ggplot(aes(x= MPA, y = meandens, fill = InOut), data = denssum) +
 
 ```
 
+Herbivores, while present at all sites, were found at higher densities around the VICRNM than the MCD. Piscivores were present at most sites in low densities.
+
 ### Biomass
 ```{r trophic biomass, fig.height = 6, fig.width=7, fig.cap="Mean fish biomass (kg/100m^2^) for trophic groups of interest across sites. Error bars represent mean &plusmn; SE."}
 # Summarize all fish
@@ -162,6 +164,15 @@ ggplot(aes(x= MPA, y = meandens, fill = InOut), data = lionsum) +
          legend.position = "none")
 ```
 
+```{r lionfish density test, echo = TRUE}
+lionDensAnova <- aov(TotalNumber ~ MPA * InOut, 
+                     data = filter(dl, ScientificName=="Pterois volitans"))
+summary(lionDensAnova)
+TukeyHSD(lionDensAnova, which ="MPA")
+```
+
+Lionfish densities were not significantly different inside and outside MPAs (p=0.2), but were significantly higher around the MCD (inside and outside) than around the VICRNM (p<0.01). This may be due to the fact that the MCD is deeper and has a higher rugosity than the VICRNM, which may be a more attractive habitat for lionfish.
+
 ### Biomass
 ```{r lionfish biomass, fig.cap="Mean lionfish biomass (kg/100m^2^) across sites. Error bars represent mean &plusmn; SE."}
 # Summarize lionfish
@@ -191,6 +202,8 @@ ggplot(aes(x= MPA, y = meanbiokg, fill = InOut), data = lionbiosum) +
          axis.line = element_line(), text = element_text(size =16),
          legend.position = "none")
 ```
+
+Lionfish biomass showed a similar pattern to density across locations.
 
 ## Groups of interest
 
@@ -244,6 +257,14 @@ ggplot(aes(x= MPA, y = meandens, fill = InOut), data = grouplionsum) +
 
 ```
 
+While it appears there might be a difference in large-bodied predator density between MPAs, the difference was not significant (see ANOVA table below).
+
+```{r predator density test}
+LBpredANOVA <- aov(LB.predator ~ MPA * InOut, data = dl)
+summary(LBpredANOVA)
+```
+
+
 ### Biomass
 ```{r group biomass, fig.width = 7.5, fig.height = 7, fig.cap="Mean fish biomass (kg/100m^2^ &plusmn; SE) across sites for all lionfish and other groups of interest, separated by MPA and inside/outside MPA boundaries. Groups were adapted from Green et al (2012)."}
 ggplot(aes(x= MPA, y = meanbiokg, fill = InOut), data = grouplionsum) +
@@ -260,7 +281,13 @@ ggplot(aes(x= MPA, y = meanbiokg, fill = InOut), data = grouplionsum) +
          legend.position = "none")
 ```
 
+There seems to be no relationship between density or biomass of lionfish and small-bodied prey fish, potential lionfish predators, or other functional groups. At the time of these recent surveys, lionfish density has had no clear direct or indirect impacts on native fish populations, although here was large variation in the density and biomass of each of these groups across sites.
 
+While there was no significant difference in large-bodied predator density between MPAs, there was a significantly higher biomass of large-bodied predators outside MPAs than inside (see ANOVA table below).
+```{r predator biomass test}
+LBpredANOVA2 <- aov(LB.predator.biomass ~ MPA * InOut, data = dl)
+summary(LBpredANOVA2)
+```
 
 ## Families
 ```{r family biomass, fig.fullwidth = TRUE, fig.height = 8, fig.cap="Mean fish family biomass (kg/100m^2^ &plusmn; SE) across sites, separated by MPA and inside/outside MPA boundaries."}
@@ -286,3 +313,47 @@ ggplot(aes(x= Family, y = meanbiokg), data = fambio) +
          axis.text.x = element_text(angle = -90, size = 10, hjust=0))
 ```
 
+There was higher biomass of several fish families inside VICRNM than other areas, including Acanthuridae (surgeonfishes), Balistidae (triggerfish), Haemulidae (grunts), Mullidae (goatfish), and Pomacanthidae (angelfish).
+
+## Species Richness
+```{r richness}
+richsum <- dl %>%
+   filter(TotalNumber>0) %>%
+   group_by(MPA, InOut, SiteID) %>% 
+   summarize(richness = length(ScientificName), .groups = "drop_last") %>%
+   summarize(meanrich = mean(richness),
+             sd = sd(richness),
+             n = length(richness), .groups="drop") %>%
+   mutate(sem = sd / sqrt(n)) %>%
+   mutate(MPAInOut = paste0(as.character(MPA), " ", as.character(InOut)))
+# Print the table
+richsum %>%
+   select(-MPAInOut) %>%
+     kable(digits = 2, align = "c",
+           col.names = c("MPA", "Location", "Mean Richness", "SD", "n", "SEM"),
+           caption = "Mean and variance of species richness across sites.")
+# Print the plot
+ggplot(aes(x= MPA, y = meanrich, fill = InOut), data = richsum) +
+   geom_bar(stat = "identity", 
+            position = position_dodge2(width = 0.9)) +
+   geom_errorbar(aes(ymin=meanrich-sem, ymax=meanrich+sem),
+                 width=0.2,position = position_dodge(width = 0.9)) +
+   ylab("Mean Species Richness") +
+   scale_y_continuous(expand = c(0,0)) +
+   scale_fill_manual(values = inoutColors) +
+   theme(panel.background = element_blank(), legend.title = element_blank(),
+         axis.line = element_line(), text = element_text(size =16),
+         legend.position = "none")
+```
+
+```{r richness test}
+rich <- dl %>%
+   filter(TotalNumber>0) %>%
+   group_by(MPA, InOut, SiteID) %>% 
+   summarize(richness = length(ScientificName), .groups = "drop")
+richAnova <- aov(richness ~ MPA * InOut, 
+                     data = rich)
+summary(richAnova)
+```
+
+Fish species richness was not significantly different across MPAs, nor across boundaries near an MPA. 

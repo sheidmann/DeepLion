@@ -444,6 +444,7 @@ $(document).ready(function () {
 Mean fish density (#/100m<sup>2</sup>) for trophic groups of interest across sites. Error bars represent mean ± SE.
 </p>
 </div>
+<p>Herbivores, while present at all sites, were found at higher densities around the VICRNM than the MCD. Piscivores were present at most sites in low densities.</p>
 </div>
 <div id="biomass" class="section level3">
 <h3>Biomass</h3>
@@ -636,6 +637,26 @@ Mean fish biomass (kg/100m<sup>2</sup>) for trophic groups of interest across si
 Mean lionfish density (#/100m<sup>2</sup>) across sites. Error bars represent mean ± SE.
 </p>
 </div>
+<pre class="r"><code>lionDensAnova &lt;- aov(TotalNumber ~ MPA * InOut, 
+                     data = filter(dl, ScientificName==&quot;Pterois volitans&quot;))
+summary(lionDensAnova)</code></pre>
+<pre><code>##              Df Sum Sq Mean Sq F value Pr(&gt;F)   
+## MPA           1   8.93   8.926   8.668 0.0039 **
+## InOut         1   1.59   1.592   1.546 0.2162   
+## MPA:InOut     1   0.34   0.342   0.332 0.5655   
+## Residuals   118 121.51   1.030                  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>TukeyHSD(lionDensAnova, which =&quot;MPA&quot;)</code></pre>
+<pre><code>##   Tukey multiple comparisons of means
+##     95% family-wise confidence level
+## 
+## Fit: aov(formula = TotalNumber ~ MPA * InOut, data = filter(dl, ScientificName == &quot;Pterois volitans&quot;))
+## 
+## $MPA
+##                  diff        lwr        upr     p adj
+## VICRNM-MCD -0.5409836 -0.9048463 -0.1771209 0.0039002</code></pre>
+<p>Lionfish densities were not significantly different inside and outside MPAs (p=0.2), but were significantly higher around the MCD (inside and outside) than around the VICRNM (p&lt;0.01). This may be due to the fact that the MCD is deeper and has a higher rugosity than the VICRNM, which may be a more attractive habitat for lionfish.</p>
 </div>
 <div id="biomass-1" class="section level3">
 <h3>Biomass</h3>
@@ -692,6 +713,7 @@ Mean lionfish density (#/100m<sup>2</sup>) across sites. Error bars represent me
 Mean lionfish biomass (kg/100m<sup>2</sup>) across sites. Error bars represent mean ± SE.
 </p>
 </div>
+<p>Lionfish biomass showed a similar pattern to density across locations.</p>
 </div>
 </div>
 <div id="groups-of-interest" class="section level2">
@@ -704,6 +726,12 @@ Mean lionfish biomass (kg/100m<sup>2</sup>) across sites. Error bars represent m
 Mean fish density (#/100m<sup>2</sup> ± SE) across sites for all lionfish and other groups of interest, separated by MPA and inside/outside MPA boundaries. Groups were adapted from Green et al (2012).
 </p>
 </div>
+<p>While it appears there might be a difference in large-bodied predator density between MPAs, the difference was not significant (see ANOVA table below).</p>
+<pre><code>##                Df Sum Sq Mean Sq F value Pr(&gt;F)
+## MPA             1    0.1 0.06675   2.526  0.112
+## InOut           1    0.0 0.01028   0.389  0.533
+## MPA:InOut       1    0.0 0.00501   0.190  0.663
+## Residuals   14392  380.3 0.02643</code></pre>
 </div>
 <div id="biomass-2" class="section level3">
 <h3>Biomass</h3>
@@ -713,6 +741,15 @@ Mean fish density (#/100m<sup>2</sup> ± SE) across sites for all lionfish and o
 Mean fish biomass (kg/100m<sup>2</sup> ± SE) across sites for all lionfish and other groups of interest, separated by MPA and inside/outside MPA boundaries. Groups were adapted from Green et al (2012).
 </p>
 </div>
+<p>There seems to be no relationship between density or biomass of lionfish and small-bodied prey fish, potential lionfish predators, or other functional groups. At the time of these recent surveys, lionfish density has had no clear direct or indirect impacts on native fish populations, although here was large variation in the density and biomass of each of these groups across sites.</p>
+<p>While there was no significant difference in large-bodied predator density between MPAs, there was a significantly higher biomass of large-bodied predators outside MPAs than inside (see ANOVA table below).</p>
+<pre><code>##                Df    Sum Sq Mean Sq F value Pr(&gt;F)  
+## MPA             1 1.600e+04   15999   0.173 0.6774  
+## InOut           1 4.346e+05  434620   4.702 0.0301 *
+## MPA:InOut       1 9.330e+02     933   0.010 0.9200  
+## Residuals   14392 1.330e+09   92439                 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 </div>
 </div>
 <div id="families" class="section level2">
@@ -723,6 +760,64 @@ Mean fish biomass (kg/100m<sup>2</sup> ± SE) across sites for all lionfish and 
 Mean fish family biomass (kg/100m<sup>2</sup> ± SE) across sites, separated by MPA and inside/outside MPA boundaries.
 </p>
 </div>
+<p>There was higher biomass of several fish families inside VICRNM than other areas, including Acanthuridae (surgeonfishes), Balistidae (triggerfish), Haemulidae (grunts), Mullidae (goatfish), and Pomacanthidae (angelfish).</p>
+</div>
+<div id="species-richness" class="section level2">
+<h2>Species Richness</h2>
+<table>
+<caption>Mean and variance of species richness across sites.</caption>
+<thead>
+<tr class="header">
+<th align="center">MPA</th>
+<th align="center">Location</th>
+<th align="center">Mean Richness</th>
+<th align="center">SD</th>
+<th align="center">n</th>
+<th align="center">SEM</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">MCD</td>
+<td align="center">IN</td>
+<td align="center">18.77</td>
+<td align="center">4.91</td>
+<td align="center">31</td>
+<td align="center">0.88</td>
+</tr>
+<tr class="even">
+<td align="center">MCD</td>
+<td align="center">OUT</td>
+<td align="center">20.87</td>
+<td align="center">5.14</td>
+<td align="center">30</td>
+<td align="center">0.94</td>
+</tr>
+<tr class="odd">
+<td align="center">VICRNM</td>
+<td align="center">IN</td>
+<td align="center">20.42</td>
+<td align="center">5.38</td>
+<td align="center">31</td>
+<td align="center">0.97</td>
+</tr>
+<tr class="even">
+<td align="center">VICRNM</td>
+<td align="center">OUT</td>
+<td align="center">21.23</td>
+<td align="center">4.42</td>
+<td align="center">30</td>
+<td align="center">0.81</td>
+</tr>
+</tbody>
+</table>
+<p><img src="density_biomass_files/figure-html/richness-1.png" width="672" /></p>
+<pre><code>##              Df Sum Sq Mean Sq F value Pr(&gt;F)
+## MPA           1   31.5   31.51   1.272  0.262
+## InOut         1   64.4   64.39   2.601  0.109
+## MPA:InOut     1   12.5   12.46   0.503  0.479
+## Residuals   118 2921.8   24.76</code></pre>
+<p>Fish species richness was not significantly different across MPAs, nor across boundaries near an MPA.</p>
 </div>
 
 

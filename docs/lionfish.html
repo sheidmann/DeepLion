@@ -308,7 +308,7 @@ $(document).ready(function () {
 
 <div id="summary" class="section level2">
 <h2>Summary</h2>
-<p>This document examines density and biomass of fish communities inside and outside the boundaries of the Hind Bank Marine Conservation District (MCD) and Virgin Islands Coral Reef National Monument (VICRNM).</p>
+<p>This document examines patterns in the density and biomass of the invasive lionfish, <em>Pterois volitans</em>. Here we look at presence and size distributions inside and outside the boundaries of the Hind Bank Marine Conservation District (MCD) and Virgin Islands Coral Reef National Monument (VICRNM), and density and biomass of lionfish as compared to that of native prey and predators.</p>
 </div>
 <div id="size-frequency" class="section level2">
 <h2>Size Frequency</h2>
@@ -318,6 +318,7 @@ $(document).ready(function () {
 Size frequency distribution of lionfish, separated by MPA and inside/outside MPA boundaries.
 </p>
 </div>
+<p>Lionfish were most abundant in the 20-30 cm size class.</p>
 </div>
 <div id="depth-patterns" class="section level2">
 <h2>Depth Patterns</h2>
@@ -347,6 +348,7 @@ Total length of all observed lionfish by depth at which each was observed, separ
 ## Residual standard error: 7.232 on 63 degrees of freedom
 ## Multiple R-squared:  0.04434,    Adjusted R-squared:  0.02917 
 ## F-statistic: 2.923 on 1 and 63 DF,  p-value: 0.09223</code></pre>
+<p>There was a suggestive relationship between depth and lionfish size (p=0.09), with larger lionfish tending to occur deeper. A more accurate relationship may be able to be determined with a higher-resolution size classification of lionfish.</p>
 </div>
 <div id="density-with-depth" class="section level3">
 <h3>Density with Depth</h3>
@@ -356,6 +358,7 @@ Total length of all observed lionfish by depth at which each was observed, separ
 Number of lionfish seen at each site by depth of the site, separated by MPA and inside/outside MPA boundaries.
 </p>
 </div>
+<p>There was no apparent relationship between lionfish density and depth.</p>
 </div>
 <div id="biomass-with-depth" class="section level3">
 <h3>Biomass with Depth</h3>
@@ -366,6 +369,28 @@ Number of lionfish seen at each site by depth of the site, separated by MPA and 
 Biomass of lionfish seen at each site by depth of the site, separated by MPA and inside/outside MPA boundaries.
 </p>
 </div>
+<pre class="r"><code>summary(lm(biokg ~ Zm_pos,
+           filter(biodepthsum, MPA==&quot;MCD&quot; &amp; InOut==&quot;IN&quot;)))</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = biokg ~ Zm_pos, data = filter(biodepthsum, MPA == 
+##     &quot;MCD&quot; &amp; InOut == &quot;IN&quot;))
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.55120 -0.23610 -0.06146  0.25114  0.67365 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)  
+## (Intercept) -2.56759    1.11271  -2.308   0.0347 *
+## Zm_pos       0.07767    0.02771   2.804   0.0127 *
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.3724 on 16 degrees of freedom
+## Multiple R-squared:  0.3294, Adjusted R-squared:  0.2875 
+## F-statistic:  7.86 on 1 and 16 DF,  p-value: 0.01275</code></pre>
+<p>There is a significant positive relationship between depth and lionfish biomass within the MCD (p=0.03), which is where many of the lionfish were found (46%). There was no relationship, however, between depth and lionfish density, suggesting that larger lionfish tend to exist on deeper reefs.</p>
 </div>
 </div>
 

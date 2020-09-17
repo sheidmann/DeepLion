@@ -312,17 +312,15 @@ $(document).ready(function () {
 </div>
 <div id="rugosity-by-mpa" class="section level2">
 <h2>Rugosity by MPA</h2>
-<pre><code>## 
-##  Welch Two Sample t-test
-## 
-## data:  filter(rugsum, MPA == &quot;MCD&quot;)$meanrug and filter(rugsum, MPA == &quot;MSR&quot;)$meanrug
-## t = 11.873, df = 63.381, p-value &lt; 2.2e-16
-## alternative hypothesis: true difference in means is not equal to 0
-## 95 percent confidence interval:
-##  53.63432 75.33913
-## sample estimates:
-## mean of x mean of y 
-##  102.5035   38.0168</code></pre>
+<pre><code>##               Df Sum Sq Mean Sq F value Pr(&gt;F)    
+## MPA            1 117935  117935 159.794 &lt;2e-16 ***
+## `IN/OUT`       1   1480    1480   2.005  0.160    
+## MPA:`IN/OUT`   1   1274    1274   1.726  0.192    
+## Residuals    110  81185     738                   
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 6 observations deleted due to missingness</code></pre>
+<p>Mean rugosity was significantly higher around the MCD than the VICRNM (p&lt;0.001), but there were no differences when comparing inside to outside for each MPA.</p>
 <div class="figure">
 <img src="rugosity_files/figure-html/rugDepth-1.png" alt="Mean rugosity (cm) of sites by depth of site (m). Shape indicates the MPA in which the site was located, and color indicates whether the site was inside or outside the MPA." width="720" />
 <p class="caption">

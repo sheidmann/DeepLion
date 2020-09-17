@@ -38,9 +38,12 @@ rugsum <- rug %>%
                 sd = sd(`RELIEF (cm)`,na.rm=T), .groups="drop") %>%
      left_join(., unique(select(dl, SiteID,Zm)), by="SiteID") %>%
      mutate(Zm_pos = - Zm)
-t.test(filter(rugsum,MPA=="MCD")$meanrug, filter(rugsum,MPA=="MSR")$meanrug, 
-       alternative = "two.sided", var.equal = FALSE)
+rugAnova <- aov(meanrug ~ MPA * `IN/OUT`, 
+                     data = rugsum)
+summary(rugAnova)
 ```
+
+Mean rugosity was significantly higher around the MCD than the VICRNM (p<0.001), but there were no differences when comparing inside to outside for each MPA. 
 
 ```{r rugDepth, message=FALSE, fig.width = 7.5, fig.height = 7, fig.cap="Mean rugosity (cm) of sites by depth of site (m). Shape indicates the MPA in which the site was located, and color indicates whether the site was inside or outside the MPA."}
 ggplot(data=rugsum, aes(x=Zm_pos,y=meanrug)) +
@@ -60,7 +63,7 @@ ggplot(data=rugsum, aes(x=Zm_pos,y=meanrug)) +
 
 ### Density 
 
-```{r lionDensRug, fig.width = 7.5, fig.height = 7, fig.cap="Lionfish density at sites by rugosity of site. Shape indicates the MPA in which the site was located, and color indicates whether the site was inside or outside the MPA."}
+```{r lionDensRug, fig.width = 7.5, fig.height = 7, fig.cap="Lionfish density at sites by rugosity of site. Shape indicates the MPA in which the site was located, and color indicates whether the site was inside or outside the MPA.", message=FALSE}
 lion <- dl %>% filter(ScientificName=="Pterois volitans") %>%
      mutate(Zm_pos = - Zm) %>%
      select(SiteID, TotalNumber,TotalBiomass) %>%
@@ -81,7 +84,7 @@ ggplot(data=lion, aes(x=meanrug,y=TotalNumber)) +
 
 ### Biomass
 
-```{r lionBioRug, fig.width = 7.5, fig.height = 7, fig.cap="Lionfish biomass at sites by rugosity of site. Shape indicates the MPA in which the site was located, and color indicates whether the site was inside or outside the MPA."}
+```{r lionBioRug, fig.width = 7.5, fig.height = 7, fig.cap="Lionfish biomass at sites by rugosity of site. Shape indicates the MPA in which the site was located, and color indicates whether the site was inside or outside the MPA.", message = FALSE}
 
 ggplot(data=lion, aes(x=meanrug,y=TotalBiomass)) +
       geom_point(aes(shape=MPA,color=`IN/OUT`), size=4, na.rm=T) +
@@ -98,7 +101,7 @@ ggplot(data=lion, aes(x=meanrug,y=TotalBiomass)) +
 
 ### Density
 
-```{r allDens, fig.width = 7.5, fig.height = 7, fig.cap="Total fish density at sites by rugosity. Shape indicates the MPA of the site, and color indicates whether the site was inside or outside the MPA."}
+```{r allDens, fig.width = 7.5, fig.height = 7, fig.cap="Total fish density at sites by rugosity. Shape indicates the MPA of the site, and color indicates whether the site was inside or outside the MPA.", message=FALSE}
 totalrug <- dl %>% group_by(SiteID) %>%
      summarize(TotalNumber = sum(TotalNumber),
                   TotalBiomasskg = sum(TotalBiomass)/1000, .groups="drop") %>%
