@@ -72,7 +72,7 @@ ggplot(aes(x= MPA, y = meandens, fill = InOut), data = denssum) +
    scale_fill_manual(values = inoutColors) +
       theme(panel.background = element_blank(), legend.title = element_blank(),
             axis.line = element_line(), text = element_text(size =16),
-            legend.position = "none")
+            legend.position = "bottom")
 
 ```
 
@@ -129,7 +129,7 @@ ggplot(aes(x= MPA, y = meanbiokg, fill = InOut), data = biosum) +
    scale_fill_manual(values = inoutColors) +
    theme(panel.background = element_blank(), legend.title = element_blank(),
          axis.line = element_line(), text = element_text(size =16),
-         legend.position = "none")
+         legend.position = "bottom")
 ```
 
 
@@ -161,7 +161,7 @@ ggplot(aes(x= MPA, y = meandens, fill = InOut), data = lionsum) +
    scale_fill_manual(values = inoutColors) +
    theme(panel.background = element_blank(), legend.title = element_blank(),
          axis.line = element_line(), text = element_text(size =16),
-         legend.position = "none")
+         legend.position = "bottom")
 ```
 
 ```{r lionfish density test, echo = TRUE}
@@ -200,7 +200,7 @@ ggplot(aes(x= MPA, y = meanbiokg, fill = InOut), data = lionbiosum) +
    scale_fill_manual(values = inoutColors) +
    theme(panel.background = element_blank(), legend.title = element_blank(),
          axis.line = element_line(), text = element_text(size =16),
-         legend.position = "none")
+         legend.position="bottom")
 ```
 
 Lionfish biomass showed a similar pattern to density across locations.
@@ -252,7 +252,7 @@ ggplot(aes(x= MPA, y = meandens, fill = InOut), data = grouplionsum) +
    scale_fill_manual(values = inoutColors) +
    theme(panel.background = element_blank(), legend.title = element_blank(),
          axis.line = element_line(), text = element_text(size =16),
-         legend.position = "none")
+         legend.position = "bottom")
 
 
 ```
@@ -278,7 +278,7 @@ ggplot(aes(x= MPA, y = meanbiokg, fill = InOut), data = grouplionsum) +
    scale_fill_manual(values = inoutColors) +
    theme(panel.background = element_blank(), legend.title = element_blank(),
          axis.line = element_line(), text = element_text(size =16),
-         legend.position = "none")
+         legend.position = "bottom")
 ```
 
 There seems to be no relationship between density or biomass of lionfish and small-bodied prey fish, potential lionfish predators, or other functional groups. At the time of these recent surveys, lionfish density has had no clear direct or indirect impacts on native fish populations, although here was large variation in the density and biomass of each of these groups across sites.
@@ -343,7 +343,7 @@ ggplot(aes(x= MPA, y = meanrich, fill = InOut), data = richsum) +
    scale_fill_manual(values = inoutColors) +
    theme(panel.background = element_blank(), legend.title = element_blank(),
          axis.line = element_line(), text = element_text(size =16),
-         legend.position = "none")
+         legend.position = "bottom")
 ```
 
 ```{r richness test}

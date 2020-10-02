@@ -45,7 +45,7 @@ ggplot(data=., aes(x=size, y=total,fill = InOut)) +
    scale_y_continuous(expand=c(0,0)) +
    facet_wrap(~MPA,ncol=1) +
    theme(panel.background = element_blank(), axis.line=element_line(),
-         text = element_text(size = 16))
+         text = element_text(size = 16), legend.position = "bottom")
 ```
 
 Lionfish were most abundant in the 20-30 cm size class.
