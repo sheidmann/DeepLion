@@ -12,6 +12,8 @@ navbar:
       href: timeseries.html
     - text: "Community"
       href: community.html
+    - text: "Indicator Species"
+      href: indicator_species.html
 output_dir: "docs"
 output:
   html_document:

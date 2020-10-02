@@ -1,0 +1,133 @@
+---
+title: "Indicator Species"
+author: "Sarah Heidmann"
+date: "10/2/2020"
+#output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+```{r library, include=FALSE}
+# Load libraries
+library(tidyverse)
+library(knitr)
+```
+```{r dataImport, include=FALSE}
+# Import data
+dl <- read_csv("data/DeepLion_qaqc_zeros.csv")
+# Set colors
+mpaColors <- c("#E69F00", "#56B4E9")
+inoutColors <- c("#00BE6C","#F8766D")
+
+# Make commercial species list
+speclist <- dl %>% filter(Commercial=="Y") %>% select(CommonName) %>% unique() %>% 
+     bind_rows(tibble(CommonName="queen triggerfish")) %>% .$CommonName
+
+# Extract size column names
+sizecols <- dl %>% select(starts_with("X") & !contains(".biomass")) %>% names() %>% .[1:11]
+```
+
+## Summary
+
+This document examines patterns in size, density, and biomass of species of interest inside and outside the boundaries of the Hind Bank Marine Conservation District (MCD) and Virgin Islands Coral Reef National Monument (VICRNM).
+
+Species of interest include:
+
+```{r speciesList}
+# speclist %>%
+#      kable(align = "c", col.names = c(""))
+cat(paste('-', speclist), sep = '\n') 
+```
+
+## Size Frequency
+```{r sizefreq, fig.width = 7.5, fig.height = 7, fig.cap="Size frequency distributions of species of interest, separated by MPA and inside/outside MPA boundaries."}
+plotSizeFreq <- function(species){
+     dat <- dl %>%
+          filter(CommonName == species) %>%
+          select(SiteID, MPA, InOut, CommonName, all_of(sizecols)) %>%
+          pivot_longer(cols = sizecols, names_to = "sizebin", values_to = "count")
+     plot <- ggplot(data=dat, aes(x=sizebin, y=count,fill = InOut)) +
+          geom_bar(color = "black",position = "dodge", stat="identity") +
+          scale_fill_manual("",values = inoutColors) +
+          xlab("Size (cm)") +
+          ylab("Frequency") +
+          ggtitle(as.character(species))+
+          scale_x_discrete(labels = c("0-5","6-10","11-20","21-30","31-40","41-50",
+                                      "51-60","61-70","71-80","81-90","91-100")) +
+          scale_y_continuous(expand=c(0,0)) +
+          facet_wrap(~MPA,ncol=1) +
+          theme(panel.background = element_blank(), axis.line=element_line(),
+                text = element_text(size = 16), legend.position = "bottom")
+     print(plot)
+     return()
+}
+
+invisible(lapply(speclist, plotSizeFreq))
+```
+
+### Herbivores
+```{r sizefreqHerb, fig.width = 7.5, fig.height = 7, fig.cap="Size frequency distribution of herbivores, separated by MPA and inside/outside MPA boundaries."}
+dl %>%
+     filter(Troph == "herbivore") %>%
+     select(SiteID, MPA, InOut, CommonName, all_of(sizecols[1:5])) %>%
+     pivot_longer(cols = sizecols[1:5], names_to = "sizebin", values_to = "count") %>%
+     mutate(sizebin = factor(sizebin,sizecols[1:5])) %>%
+     group_by(SiteID, MPA, InOut, sizebin) %>%
+     summarize(count = sum(count), .groups="drop") %>%
+     ggplot(data=., aes(x=sizebin, y=count,fill = InOut)) +
+     geom_bar(color = "black",position = "dodge", stat="identity") +
+     scale_fill_manual("",values = inoutColors) +
+     xlab("Size (cm)") +
+     ylab("Frequency") +
+     scale_x_discrete(labels = c("0-5","6-10","11-20","21-30","31-40")) +
+     scale_y_continuous(expand=c(0,0)) +
+     facet_wrap(~MPA,ncol=1) +
+     theme(panel.background = element_blank(), axis.line=element_line(),
+           text = element_text(size = 16), legend.position = "bottom")
+```
+
+## Herbivores across depth
+
+### Size
+
+```{r herbdepthsize, fig.width = 7.5, fig.height = 7, fig.cap="Depth at which each size class of herbovores was found, separated by inside/outside MPA boundaries."}
+dl %>%
+     filter(Troph == "herbivore") %>%
+     mutate(Zm_pos = -Zm) %>%
+     select(SiteID, MPA, InOut, Zm_pos, all_of(sizecols[1:5])) %>%
+     pivot_longer(cols = sizecols[1:5], names_to = "sizebin", values_to = "count") %>%
+     mutate(sizebin = factor(sizebin,sizecols[1:5])) %>%
+     group_by(SiteID, Zm_pos, MPA, InOut, sizebin) %>%
+     summarize(count = sum(count), .groups="drop") %>%
+     filter(count >0) %>%
+     ggplot(data=., aes(x=sizebin, y=Zm_pos,color = InOut, size = count)) +
+     geom_point() +
+     scale_color_manual("",values = inoutColors) +
+     xlab("Size (cm)") +
+     ylab("Depth (m)") +
+     scale_x_discrete(labels = c("0-5","6-10","11-20","21-30","31-40")) +
+     scale_y_continuous(expand=c(0,0)) +
+     theme(panel.background = element_blank(), axis.line=element_line(),
+           text = element_text(size = 16), legend.position = "bottom")
+```
+
+### Density
+```{r herbdepthdens, fig.width = 7.5, fig.height = 7, fig.cap="Density of herbivores by depth. Shape indicates the MPA of the site, and color indicates whether the site was inside or outside the MPA."}
+dl %>%
+     filter(Troph == "herbivore") %>%
+     mutate(Zm_pos = -Zm) %>%
+     select(SiteID, MPA, InOut, Zm_pos, TotalNumber) %>%
+     group_by(SiteID, Zm_pos, MPA, InOut) %>%
+     summarize(TotalNumber = sum(TotalNumber), .groups="drop") %>%
+     ggplot(data=., aes(x=Zm_pos, y=TotalNumber,color = InOut, shape = MPA)) +
+     geom_point(size=4) +
+     scale_color_manual("",values = inoutColors) +
+      scale_shape_manual("MPA", values = c(16,17), labels = c("MCD","VICRNM")) +
+     xlab("Depth (m)") +
+     ylab(expression(paste("Herbivore Density (#/100",m^2,")"))) +
+     scale_y_continuous(expand=c(0,0)) +
+     theme(panel.background = element_blank(), axis.line=element_line(),
+           text = element_text(size = 16), legend.position = "right")
+```
+
