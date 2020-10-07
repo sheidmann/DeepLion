@@ -41,29 +41,72 @@ cat(paste('-', speclist), sep = '\n')
 ```
 
 ## Size Frequency
-```{r sizefreq, fig.width = 7.5, fig.height = 7, fig.cap="Size frequency distributions of species of interest, separated by MPA and inside/outside MPA boundaries."}
-plotSizeFreq <- function(species){
-     dat <- dl %>%
-          filter(CommonName == species) %>%
-          select(SiteID, MPA, InOut, CommonName, all_of(sizecols)) %>%
-          pivot_longer(cols = sizecols, names_to = "sizebin", values_to = "count")
-     plot <- ggplot(data=dat, aes(x=sizebin, y=count,fill = InOut)) +
-          geom_bar(color = "black",position = "dodge", stat="identity") +
-          scale_fill_manual("",values = inoutColors) +
-          xlab("Size (cm)") +
-          ylab("Frequency") +
-          ggtitle(as.character(species))+
-          scale_x_discrete(labels = c("0-5","6-10","11-20","21-30","31-40","41-50",
-                                      "51-60","61-70","71-80","81-90","91-100")) +
-          scale_y_continuous(expand=c(0,0)) +
-          facet_wrap(~MPA,ncol=1) +
-          theme(panel.background = element_blank(), axis.line=element_line(),
-                text = element_text(size = 16), legend.position = "bottom")
-     print(plot)
-     return()
+```{r sizefreq, fig.width = 7.5, fig.height = 7}
+plotSpecies <- function(species){
+   # subset species
+   spec <- dl %>%
+      filter(CommonName == species) 
+   # Size frequency plot  
+   sizedat <- spec %>%
+      select(SiteID, MPA, InOut, CommonName, all_of(sizecols)) %>%
+      pivot_longer(cols = all_of(sizecols), names_to = "sizebin", values_to = "count")
+   sizefreq <- ggplot(data=sizedat, aes(x=sizebin, y=count,fill = InOut)) +
+      geom_bar(color = "black",position = "dodge", stat="identity") +
+      scale_fill_manual("",values = inoutColors) +
+      xlab("Size (cm)") +
+      ylab("Frequency") +
+      ggtitle(as.character(species))+
+      scale_x_discrete(labels = c("0-5","6-10","11-20","21-30","31-40","41-50",
+                                  "51-60","61-70","71-80","81-90","91-100")) +
+      scale_y_continuous(expand=c(0,0)) +
+      facet_wrap(~MPA,ncol=1) +
+      theme(panel.background = element_blank(), axis.line=element_line(),
+            text = element_text(size = 16), legend.position = "bottom")
+   print(sizefreq)
+   # Density and biomass inside and out
+   specsum <- spec %>%
+      group_by(MPA, InOut, SiteID) %>%
+      summarize(totdens = sum(TotalNumber), 
+                totbiokg = sum(TotalBiomass)/1000, .groups="drop_last") %>%
+      summarize(meandens = mean(totdens),
+                sddens = sd(totdens),
+                ndens = length(totdens), 
+                meanbiokg = mean(totbiokg),
+                sdbiokg = sd(totbiokg),
+                nbiokg = length(totbiokg), .groups="drop") %>%
+      mutate(semdens = sddens / sqrt(ndens), 
+             sembiokg = sdbiokg / sqrt(nbiokg))
+   densplot <- ggplot(aes(x= MPA, y = meandens, fill = InOut), data = specsum) +
+      geom_bar(stat = "identity", 
+               position = position_dodge2(width = 0.9)) +
+      geom_errorbar(aes(ymin=meandens-semdens, ymax=meandens+semdens),
+                    width=0.2,position = position_dodge(width = 0.9)) +
+      ylab(expression(paste("Mean Density (#/100",m^2,")"))) +
+      ggtitle(as.character(species)) +
+      scale_y_continuous(expand = c(0,0)) +
+      scale_fill_manual(values = inoutColors) +
+      theme(panel.background = element_blank(), legend.title = element_blank(),
+            axis.line = element_line(), text = element_text(size =16),
+            legend.position = "bottom")
+   print(densplot)
+   bioplot <- ggplot(aes(x= MPA, y = meanbiokg, fill = InOut), data = specsum) +
+      geom_bar(stat = "identity", 
+               position = position_dodge2(width = 0.9)) +
+      geom_errorbar(aes(ymin=meanbiokg-sembiokg, ymax=meanbiokg+sembiokg),
+                    width=0.2,position = position_dodge(width = 0.9)) +
+      ylab(expression(paste("Mean Biomass (kg/100",m^2,")"))) +
+      ggtitle(as.character(species)) +
+      scale_y_continuous(expand = c(0,0)) +
+      scale_fill_manual(values = inoutColors) +
+      theme(panel.background = element_blank(), legend.title = element_blank(),
+            axis.line = element_line(), text = element_text(size =16),
+            legend.position = "bottom")
+   print(bioplot)
+   
+   return()
 }
 
-invisible(lapply(speclist, plotSizeFreq))
+invisible(lapply(speclist, plotSpecies))
 ```
 
 ### Herbivores
