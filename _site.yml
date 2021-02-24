@@ -8,6 +8,8 @@ navbar:
       href: lionfish.html
     - text: "Rugosity"
       href: rugosity.html
+    - text: "Multiple Regressions"
+      href: multiple_regression.html      
     - text: "Time Series"
       href: timeseries.html
     - text: "Community"

@@ -12,7 +12,7 @@
 <meta name="author" content="Sarah Heidmann" />
 
 
-<title>Indicator Species</title>
+<title>Multiple Regression</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -315,65 +315,26 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Indicator Species</h1>
+<h1 class="title toc-ignore">Multiple Regression</h1>
 <h4 class="author">Sarah Heidmann</h4>
-<h4 class="date">10/2/2020</h4>
+<h4 class="date">2/24/2021</h4>
 
 </div>
 
 
 <div id="summary" class="section level2">
 <h2>Summary</h2>
-<p>This document examines patterns in size, density, and biomass of species of interest inside and outside the boundaries of the Hind Bank Marine Conservation District (MCD) and Virgin Islands Coral Reef National Monument (VICRNM).</p>
-<p>Species of interest include:</p>
-<pre><code>## - coney
-## - red hind
-## - Nassau grouper
-## - hogfish
-## - mutton snapper
-## - schoolmaster
-## - cubera snapper
-## - gray snapper
-## - dog snapper
-## - lane snapper
-## - yellowfin grouper
-## - yellowtail snapper
-## - queen triggerfish</code></pre>
+<p>This document examines patterns in density and biomass of species relative to depth and rugosity at sites inside and outside the boundaries of the Hind Bank Marine Conservation District (MCD) and Virgin Islands Coral Reef National Monument (VICRNM).</p>
 </div>
-<div id="size-frequency" class="section level2">
-<h2>Size Frequency</h2>
-<p><img src="indicator_species_files/figure-html/sizefreq-1.png" width="720" /><img src="indicator_species_files/figure-html/sizefreq-2.png" width="720" /><img src="indicator_species_files/figure-html/sizefreq-3.png" width="720" /><img src="indicator_species_files/figure-html/sizefreq-4.png" width="720" /><img src="indicator_species_files/figure-html/sizefreq-5.png" width="720" /><img src="indicator_species_files/figure-html/sizefreq-6.png" width="720" /><img src="indicator_species_files/figure-html/sizefreq-7.png" width="720" /><img src="indicator_species_files/figure-html/sizefreq-8.png" width="720" /><img src="indicator_species_files/figure-html/sizefreq-9.png" width="720" /><img src="indicator_species_files/figure-html/sizefreq-10.png" width="720" /><img src="indicator_species_files/figure-html/sizefreq-11.png" width="720" /><img src="indicator_species_files/figure-html/sizefreq-12.png" width="720" /><img src="indicator_species_files/figure-html/sizefreq-13.png" width="720" /><img src="indicator_species_files/figure-html/sizefreq-14.png" width="720" /><img src="indicator_species_files/figure-html/sizefreq-15.png" width="720" /><img src="indicator_species_files/figure-html/sizefreq-16.png" width="720" /><img src="indicator_species_files/figure-html/sizefreq-17.png" width="720" /><img src="indicator_species_files/figure-html/sizefreq-18.png" width="720" /><img src="indicator_species_files/figure-html/sizefreq-19.png" width="720" /><img src="indicator_species_files/figure-html/sizefreq-20.png" width="720" /><img src="indicator_species_files/figure-html/sizefreq-21.png" width="720" /><img src="indicator_species_files/figure-html/sizefreq-22.png" width="720" /><img src="indicator_species_files/figure-html/sizefreq-23.png" width="720" /><img src="indicator_species_files/figure-html/sizefreq-24.png" width="720" /><img src="indicator_species_files/figure-html/sizefreq-25.png" width="720" /><img src="indicator_species_files/figure-html/sizefreq-26.png" width="720" /><img src="indicator_species_files/figure-html/sizefreq-27.png" width="720" /><img src="indicator_species_files/figure-html/sizefreq-28.png" width="720" /><img src="indicator_species_files/figure-html/sizefreq-29.png" width="720" /><img src="indicator_species_files/figure-html/sizefreq-30.png" width="720" /><img src="indicator_species_files/figure-html/sizefreq-31.png" width="720" /><img src="indicator_species_files/figure-html/sizefreq-32.png" width="720" /><img src="indicator_species_files/figure-html/sizefreq-33.png" width="720" /><img src="indicator_species_files/figure-html/sizefreq-34.png" width="720" /><img src="indicator_species_files/figure-html/sizefreq-35.png" width="720" /><img src="indicator_species_files/figure-html/sizefreq-36.png" width="720" /><img src="indicator_species_files/figure-html/sizefreq-37.png" width="720" /><img src="indicator_species_files/figure-html/sizefreq-38.png" width="720" /><img src="indicator_species_files/figure-html/sizefreq-39.png" width="720" /></p>
-<div id="herbivores" class="section level3">
-<h3>Herbivores</h3>
+<div id="density" class="section level2">
+<h2>Density</h2>
+<p>A multiple regression showed a significant negative relationship between depth (as a positive value) and total fish density (r = -0.36, p = 0.01), but no significant relationship between total fish density and rugosity (p = 0.43), or an interaction between rugosity and depth (p = 0.37).</p>
+<p>Upon closer examination, each MPA, which have discrete depth ranges, has a peak of fish density in the middle of its range of depths.</p>
 <div class="figure">
-<img src="indicator_species_files/figure-html/sizefreqHerb-1.png" alt="Size frequency distribution of herbivores, separated by MPA and inside/outside MPA boundaries." width="720" />
+<img src="multiple_regression_files/figure-html/DepthRugDensPlot-1.png" alt="Density of all fish by depth. Shape indicates the MPA of the site, and color indicates whether the site was inside or outside the MPA. Lines fit using LOESS smoothing." width="720" />
 <p class="caption">
-Size frequency distribution of herbivores, separated by MPA and inside/outside MPA boundaries.
+Density of all fish by depth. Shape indicates the MPA of the site, and color indicates whether the site was inside or outside the MPA. Lines fit using LOESS smoothing.
 </p>
-</div>
-</div>
-</div>
-<div id="herbivores-across-depth" class="section level2">
-<h2>Herbivores across depth</h2>
-<div id="size" class="section level3">
-<h3>Size</h3>
-<pre><code>## Warning: Removed 3 rows containing missing values (geom_point).</code></pre>
-<div class="figure">
-<img src="indicator_species_files/figure-html/herbdepthsize-1.png" alt="Depth at which each size class of herbovores was found, separated by inside/outside MPA boundaries." width="720" />
-<p class="caption">
-Depth at which each size class of herbovores was found, separated by inside/outside MPA boundaries.
-</p>
-</div>
-</div>
-<div id="density" class="section level3">
-<h3>Density</h3>
-<pre><code>## Warning: Removed 1 rows containing missing values (geom_point).</code></pre>
-<div class="figure">
-<img src="indicator_species_files/figure-html/herbdepthdens-1.png" alt="Density of herbivores by depth. Shape indicates the MPA of the site, and color indicates whether the site was inside or outside the MPA." width="720" />
-<p class="caption">
-Density of herbivores by depth. Shape indicates the MPA of the site, and color indicates whether the site was inside or outside the MPA.
-</p>
-</div>
 </div>
 </div>
 

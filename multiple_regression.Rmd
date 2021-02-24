@@ -1,0 +1,65 @@
+---
+title: "Multiple Regression"
+author: "Sarah Heidmann"
+date: "2/24/2021"
+#output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+```{r library, include=FALSE}
+# Load libraries
+library(tidyverse)
+library(knitr)
+```
+```{r dataImport, include=FALSE}
+# Import data
+dl <- read_csv("data/DeepLion_qaqc_zeros.csv")
+rug <- read_csv("data/DL20180725_Relief_Master.csv")
+# Set colors
+mpaColors <- c("#E69F00", "#56B4E9")
+inoutColors <- c("#00BE6C","#F8766D")
+```
+
+## Summary
+
+This document examines patterns in density and biomass of species relative to depth and rugosity at sites inside and outside the boundaries of the Hind Bank Marine Conservation District (MCD) and Virgin Islands Coral Reef National Monument (VICRNM).
+
+## Density
+```{r DepthRugDens}
+fishdens <- dl %>%
+     filter(Family != "Gobiidae") %>%
+     mutate(Zm_pos = - Zm) %>%
+     group_by(SiteID, MPA, InOut, Zm_pos) %>%
+     summarize(totdens = sum(TotalNumber), .groups="drop")
+     
+rugsum <- rug %>%
+     rename(SiteID=LOCATION) %>%
+     group_by(SiteID) %>%
+     summarize(meanrug = mean(`RELIEF (cm)`, na.rm=T),
+                nrug = sum(!(is.na(`RELIEF (cm)`))),
+                sdrug = sd(`RELIEF (cm)`,na.rm=T), .groups="drop")
+DepthRugDens <- left_join(fishdens, rugsum, by="SiteID")
+DensFit <- lm(totdens ~ Zm_pos * meanrug, data = DepthRugDens)
+#summary(DensFit)
+#cor(DensFit$model$totdens, DensFit$model$Zm_pos)
+```
+
+A multiple regression showed a significant negative relationship between depth (as a positive value) and total fish density (r = `r cor(DensFit$model$totdens, DensFit$model$Zm_pos) %>% round(2)`, p = `r summary(DensFit)$coefficients[2,4] %>% round(2)`), but no significant relationship between total fish density and rugosity (p = `r summary(DensFit)$coefficients[3,4] %>% round(2)`), or an interaction between rugosity and depth (p = `r summary(DensFit)$coefficients[4,4] %>% round(2)`).
+
+Upon closer examination, each MPA, which have discrete depth ranges, has a peak of fish density in the middle of its range of depths.
+
+```{r DepthRugDensPlot, warning = FALSE, fig.width = 7.5, fig.height = 7, fig.cap="Density of all fish by depth. Shape indicates the MPA of the site, and color indicates whether the site was inside or outside the MPA. Lines fit using LOESS smoothing."}
+ggplot(data = DepthRugDens,
+       aes(x=Zm_pos, y=totdens, color=InOut, shape=MPA)) +
+     geom_point(size=4) +
+     geom_smooth(aes(group = MPA), method = "loess", formula = y~x) +
+     scale_color_manual("",values = inoutColors) +
+     scale_shape_manual("MPA", values = c(16,17), labels = c("MCD","VICRNM")) +
+     xlab("Depth (m)") +
+     ylab(expression(paste("Total Fish Density (#/100",m^2,")"))) +
+     theme(panel.background= element_blank(), axis.line = element_line(),
+           text = element_text(size = 16), legend.position = "right")
+```
+

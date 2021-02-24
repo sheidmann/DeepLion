@@ -24,6 +24,15 @@
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
   pre:not([class]) {
@@ -68,6 +77,7 @@ h6 {
   text-align: left;
 }
 </style>
+
 
 
 
@@ -282,6 +292,9 @@ $(document).ready(function () {
   <a href="rugosity.html">Rugosity</a>
 </li>
 <li>
+  <a href="multiple_regression.html">Multiple Regressions</a>
+</li>
+<li>
   <a href="timeseries.html">Time Series</a>
 </li>
 <li>
@@ -484,32 +497,32 @@ dimnames(density_matrix) &lt;- list(as.character(groupsitesum$SiteID), names(gro
 dens_NMDS &lt;- metaMDS(density_matrix, distance=&quot;jaccard&quot;, k=2)</code></pre>
 <pre><code>## Square root transformation
 ## Wisconsin double standardization
-## Run 0 stress 0.1487912 
-## Run 1 stress 0.1669407 
-## Run 2 stress 0.1618344 
-## Run 3 stress 0.1629544 
-## Run 4 stress 0.1492401 
-## ... Procrustes: rmse 0.03608742  max resid 0.2648802 
-## Run 5 stress 0.1597651 
-## Run 6 stress 0.146232 
+## Run 0 stress 0.148791 
+## Run 1 stress 0.1688406 
+## Run 2 stress 0.1578058 
+## Run 3 stress 0.159774 
+## Run 4 stress 0.1608639 
+## Run 5 stress 0.160864 
+## Run 6 stress 0.1462316 
 ## ... New best solution
-## ... Procrustes: rmse 0.03322084  max resid 0.2700031 
-## Run 7 stress 0.16214 
-## Run 8 stress 0.1571394 
-## Run 9 stress 0.1566611 
-## Run 10 stress 0.1817172 
-## Run 11 stress 0.1634912 
-## Run 12 stress 0.1619578 
-## Run 13 stress 0.1580335 
-## Run 14 stress 0.1632193 
-## Run 15 stress 0.1783887 
-## Run 16 stress 0.1607741 
-## Run 17 stress 0.1540727 
-## Run 18 stress 0.1802988 
-## Run 19 stress 0.1542293 
-## Run 20 stress 0.1538426 
+## ... Procrustes: rmse 0.03322249  max resid 0.2700594 
+## Run 7 stress 0.1543362 
+## Run 8 stress 0.15366 
+## Run 9 stress 0.156976 
+## Run 10 stress 0.1600106 
+## Run 11 stress 0.1554839 
+## Run 12 stress 0.1681168 
+## Run 13 stress 0.1590056 
+## Run 14 stress 0.1573449 
+## Run 15 stress 0.1664351 
+## Run 16 stress 0.1652029 
+## Run 17 stress 0.1650048 
+## Run 18 stress 0.1603019 
+## Run 19 stress 0.1662444 
+## Run 20 stress 0.1566608 
 ## *** No convergence -- monoMDS stopping criteria:
-##     20: stress ratio &gt; sratmax</code></pre>
+##     19: stress ratio &gt; sratmax
+##      1: scale factor of the gradient &lt; sfgrmin</code></pre>
 <pre class="r"><code>stressplot(dens_NMDS)</code></pre>
 <p><img src="community_files/figure-html/groupDens-1.png" width="672" /></p>
 <p>The fit is good with fairly low stress.</p>
@@ -667,35 +680,35 @@ dimnames(biomass_matrix) &lt;- list(as.character(groupsitesum$SiteID),
 bio_NMDS &lt;- metaMDS(biomass_matrix, distance=&quot;jaccard&quot;, k=2)</code></pre>
 <pre><code>## Square root transformation
 ## Wisconsin double standardization
-## Run 0 stress 0.1995132 
-## Run 1 stress 0.1962013 
+## Run 0 stress 0.1994939 
+## Run 1 stress 0.1961503 
 ## ... New best solution
-## ... Procrustes: rmse 0.04346615  max resid 0.3566978 
-## Run 2 stress 0.2167396 
-## Run 3 stress 0.1990167 
-## Run 4 stress 0.1994992 
-## Run 5 stress 0.2101519 
-## Run 6 stress 0.1961502 
+## ... Procrustes: rmse 0.04001264  max resid 0.3602292 
+## Run 2 stress 0.1992059 
+## Run 3 stress 0.1984051 
+## Run 4 stress 0.1986152 
+## Run 5 stress 0.199494 
+## Run 6 stress 0.199494 
+## Run 7 stress 0.2160886 
+## Run 8 stress 0.2161895 
+## Run 9 stress 0.1992058 
+## Run 10 stress 0.2202933 
+## Run 11 stress 0.1992063 
+## Run 12 stress 0.1994978 
+## Run 13 stress 0.1961501 
 ## ... New best solution
-## ... Procrustes: rmse 0.01717989  max resid 0.1447271 
-## Run 7 stress 0.1994948 
-## Run 8 stress 0.1983665 
-## Run 9 stress 0.1992251 
-## Run 10 stress 0.2596588 
-## Run 11 stress 0.1961556 
-## ... Procrustes: rmse 0.0008884612  max resid 0.009407595 
+## ... Procrustes: rmse 0.0001528102  max resid 0.001608085 
 ## ... Similar to previous best
-## Run 12 stress 0.2160679 
-## Run 13 stress 0.2289992 
-## Run 14 stress 0.1984095 
-## Run 15 stress 0.1993083 
-## Run 16 stress 0.1992169 
-## Run 17 stress 0.1961524 
-## ... Procrustes: rmse 0.000464774  max resid 0.004944823 
+## Run 14 stress 0.19615 
+## ... New best solution
+## ... Procrustes: rmse 6.089755e-05  max resid 0.0004377599 
 ## ... Similar to previous best
-## Run 18 stress 0.198367 
-## Run 19 stress 0.2172304 
-## Run 20 stress 0.2159845 
+## Run 15 stress 0.2097236 
+## Run 16 stress 0.2202878 
+## Run 17 stress 0.1993071 
+## Run 18 stress 0.1983665 
+## Run 19 stress 0.2179404 
+## Run 20 stress 0.2178527 
 ## *** Solution reached</code></pre>
 <pre class="r"><code>stressplot(bio_NMDS)</code></pre>
 <p><img src="community_files/figure-html/groupBio-1.png" width="672" /></p>
@@ -740,12 +753,10 @@ bio_perm</code></pre>
 ## Number of permutations: 999
 ## 
 ## adonis2(formula = biomass_matrix ~ paste(MPA, InOut), data = groupsitesum)
-##                    Df SumOfSqs      R2      F Pr(&gt;F)  
-## paste(MPA, InOut)   3   0.9943 0.03532 1.4401  0.096 .
-## Residual          118  27.1566 0.96468                
-## Total             121  28.1509 1.00000                
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+##                    Df SumOfSqs      R2      F Pr(&gt;F)
+## paste(MPA, InOut)   3   0.9943 0.03532 1.4401  0.116
+## Residual          118  27.1566 0.96468              
+## Total             121  28.1509 1.00000</code></pre>
 <p>Since the PERMANOVA is not significant, we don’t need to do a SIMPER.</p>
 </div>
 </div>
@@ -915,36 +926,43 @@ trophdens_NMDS &lt;- metaMDS(trophdensmatrix, distance=&quot;jaccard&quot;, k=2)
 <pre><code>## Square root transformation
 ## Wisconsin double standardization
 ## Run 0 stress 0.1463926 
-## Run 1 stress 0.1371667 
+## Run 1 stress 0.1579777 
+## Run 2 stress 0.1467165 
+## ... Procrustes: rmse 0.01756766  max resid 0.1386902 
+## Run 3 stress 0.1371659 
 ## ... New best solution
-## ... Procrustes: rmse 0.0290792  max resid 0.1409364 
-## Run 2 stress 0.1467618 
-## Run 3 stress 0.1863214 
-## Run 4 stress 0.1467615 
-## Run 5 stress 0.1922475 
-## Run 6 stress 0.1425177 
-## Run 7 stress 0.2194982 
-## Run 8 stress 0.1445304 
-## Run 9 stress 0.1482302 
-## Run 10 stress 0.170887 
-## Run 11 stress 0.1371658 
+## ... Procrustes: rmse 0.02906821  max resid 0.1409436 
+## Run 4 stress 0.1541218 
+## Run 5 stress 0.1883988 
+## Run 6 stress 0.174543 
+## Run 7 stress 0.1371616 
 ## ... New best solution
-## ... Procrustes: rmse 0.0001016843  max resid 0.0005104532 
+## ... Procrustes: rmse 0.0006470771  max resid 0.004367098 
 ## ... Similar to previous best
-## Run 12 stress 0.1457655 
-## Run 13 stress 0.1858276 
-## Run 14 stress 0.1371615 
+## Run 8 stress 0.1425174 
+## Run 9 stress 0.1371601 
 ## ... New best solution
-## ... Procrustes: rmse 0.0006024914  max resid 0.004306759 
+## ... Procrustes: rmse 0.0002961269  max resid 0.00234178 
 ## ... Similar to previous best
-## Run 15 stress 0.14517 
-## Run 16 stress 0.1425179 
-## Run 17 stress 0.1371663 
-## ... Procrustes: rmse 0.0006576532  max resid 0.00436671 
+## Run 10 stress 0.1371657 
+## ... Procrustes: rmse 0.000501562  max resid 0.004228036 
 ## ... Similar to previous best
-## Run 18 stress 0.1467166 
-## Run 19 stress 0.2043967 
-## Run 20 stress 0.1492106 
+## Run 11 stress 0.1876114 
+## Run 12 stress 0.200606 
+## Run 13 stress 0.1371657 
+## ... Procrustes: rmse 0.0004952609  max resid 0.004213772 
+## ... Similar to previous best
+## Run 14 stress 0.1573074 
+## Run 15 stress 0.1771659 
+## Run 16 stress 0.1679654 
+## Run 17 stress 0.1371657 
+## ... Procrustes: rmse 0.0005007213  max resid 0.004226636 
+## ... Similar to previous best
+## Run 18 stress 0.1573074 
+## Run 19 stress 0.1371658 
+## ... Procrustes: rmse 0.0005045068  max resid 0.004235905 
+## ... Similar to previous best
+## Run 20 stress 0.1465465 
 ## *** Solution reached</code></pre>
 <pre class="r"><code>stressplot(trophdens_NMDS)</code></pre>
 <p><img src="community_files/figure-html/trophDens-1.png" width="672" /></p>
@@ -1031,49 +1049,46 @@ dimnames(trophbiomatrix) &lt;- list(as.character(trophbio$SiteID),
 trophbio_NMDS &lt;- metaMDS(trophbiomatrix, distance = &quot;jaccard&quot;, k=2)</code></pre>
 <pre><code>## Square root transformation
 ## Wisconsin double standardization
-## Run 0 stress 0.1844904 
-## Run 1 stress 0.1845401 
-## ... Procrustes: rmse 0.002888823  max resid 0.02785716 
-## Run 2 stress 0.1845391 
-## ... Procrustes: rmse 0.002901404  max resid 0.02781793 
-## Run 3 stress 0.1844722 
+## Run 0 stress 0.1844903 
+## Run 1 stress 0.1844903 
 ## ... New best solution
-## ... Procrustes: rmse 0.002704871  max resid 0.02388641 
-## Run 4 stress 0.1867492 
-## Run 5 stress 0.1867491 
-## Run 6 stress 0.2055548 
-## Run 7 stress 0.1844722 
+## ... Procrustes: rmse 1.297342e-05  max resid 9.503013e-05 
+## ... Similar to previous best
+## Run 2 stress 0.1867489 
+## Run 3 stress 0.1867489 
+## Run 4 stress 0.1845379 
+## ... Procrustes: rmse 0.002878612  max resid 0.02788883 
+## Run 5 stress 0.1844722 
 ## ... New best solution
-## ... Procrustes: rmse 4.837666e-05  max resid 0.0002704271 
+## ... Procrustes: rmse 0.002673493  max resid 0.02362763 
+## Run 6 stress 0.186749 
+## Run 7 stress 0.1844904 
+## ... Procrustes: rmse 0.002704368  max resid 0.02385879 
+## Run 8 stress 0.186749 
+## Run 9 stress 0.1844904 
+## ... Procrustes: rmse 0.0026923  max resid 0.0237738 
+## Run 10 stress 0.1845379 
+## ... Procrustes: rmse 0.004187294  max resid 0.02864922 
+## Run 11 stress 0.1867509 
+## Run 12 stress 0.186749 
+## Run 13 stress 0.186749 
+## Run 14 stress 0.1867489 
+## Run 15 stress 0.1844722 
+## ... Procrustes: rmse 2.503787e-05  max resid 0.0001261405 
 ## ... Similar to previous best
-## Run 8 stress 0.184539 
-## ... Procrustes: rmse 0.004253581  max resid 0.02841823 
-## Run 9 stress 0.1844724 
-## ... Procrustes: rmse 9.445974e-05  max resid 0.0006003811 
+## Run 16 stress 0.184538 
+## ... Procrustes: rmse 0.004225536  max resid 0.02863554 
+## Run 17 stress 0.1844903 
+## ... Procrustes: rmse 0.002664768  max resid 0.02355884 
+## Run 18 stress 0.1844721 
+## ... New best solution
+## ... Procrustes: rmse 3.668578e-05  max resid 0.0002466032 
 ## ... Similar to previous best
-## Run 10 stress 0.18454 
-## ... Procrustes: rmse 0.002890521  max resid 0.02837027 
-## Run 11 stress 0.1845406 
-## ... Procrustes: rmse 0.002912587  max resid 0.02834162 
-## Run 12 stress 0.1844725 
-## ... Procrustes: rmse 0.0001251948  max resid 0.0006090241 
+## Run 19 stress 0.1844722 
+## ... Procrustes: rmse 2.442259e-05  max resid 0.0001420265 
 ## ... Similar to previous best
-## Run 13 stress 0.1844723 
-## ... Procrustes: rmse 4.55511e-05  max resid 0.0002834149 
-## ... Similar to previous best
-## Run 14 stress 0.186751 
-## Run 15 stress 0.4137844 
-## Run 16 stress 0.1844722 
-## ... Procrustes: rmse 5.010594e-05  max resid 0.0002516947 
-## ... Similar to previous best
-## Run 17 stress 0.205555 
-## Run 18 stress 0.1844722 
-## ... Procrustes: rmse 4.256276e-05  max resid 0.0003083017 
-## ... Similar to previous best
-## Run 19 stress 0.1867496 
-## Run 20 stress 0.1844725 
-## ... Procrustes: rmse 0.0001181738  max resid 0.0008146085 
-## ... Similar to previous best
+## Run 20 stress 0.1844904 
+## ... Procrustes: rmse 0.002682571  max resid 0.02369394 
 ## *** Solution reached</code></pre>
 <pre class="r"><code>stressplot(trophbio_NMDS)</code></pre>
 <p><img src="community_files/figure-html/trophBio-1.png" width="672" /></p>
@@ -1111,7 +1126,7 @@ trophbio_perm</code></pre>
 ## 
 ## adonis2(formula = trophbiomatrix ~ paste(MPA, InOut), data = trophbio)
 ##                    Df SumOfSqs      R2      F Pr(&gt;F)  
-## paste(MPA, InOut)   3   0.9642 0.04352 1.7895  0.036 *
+## paste(MPA, InOut)   3   0.9642 0.04352 1.7895   0.04 *
 ## Residual          118  21.1933 0.95648                
 ## Total             121  22.1576 1.00000                
 ## ---
@@ -1313,7 +1328,7 @@ comdens &lt;- comsum %&gt;%
 
 // add bootstrap table styles to pandoc tables
 function bootstrapStylePandocTables() {
-  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
 }
 $(document).ready(function () {
   bootstrapStylePandocTables();
