@@ -50,7 +50,7 @@ A multiple regression showed a significant negative relationship between depth (
 
 Upon closer examination, each MPA, which have discrete depth ranges, has a peak of fish density in the middle of its range of depths.
 
-```{r DepthRugDensPlot, warning = FALSE, fig.width = 7.5, fig.height = 7, fig.cap="Density of all fish by depth. Shape indicates the MPA of the site, and color indicates whether the site was inside or outside the MPA. Lines fit using LOESS smoothing."}
+```{r DepthRugDensPlot, warning = FALSE, fig.width = 8, fig.height = 6, fig.cap="Density of all fish by depth. Shape indicates the MPA of the site, and color indicates whether the site was inside or outside the MPA. Lines fit using LOESS smoothing."}
 ggplot(data = DepthRugDens,
        aes(x=Zm_pos, y=totdens, color=InOut, shape=MPA)) +
      geom_point(size=4) +
@@ -62,4 +62,18 @@ ggplot(data = DepthRugDens,
      theme(panel.background= element_blank(), axis.line = element_line(),
            text = element_text(size = 16), legend.position = "right")
 ```
+
+## Biomass
+```{r DepthRugBio}
+fishbio <- dl %>%
+     mutate(Zm_pos = - Zm) %>%
+     group_by(SiteID, MPA, InOut, Zm_pos) %>%
+     summarize(totbio = sum(TotalBiomass), .groups="drop")
+
+DepthRugBio <- left_join(fishbio, rugsum, by="SiteID")
+BioFit <- lm(totbio ~ Zm_pos * meanrug, data = DepthRugBio)
+#summary(BioFit)
+```
+
+A multiple regression showed no significant relationships between depth, rugosity, and total fish biomass (p > `r max(summary(BioFit)$coefficients[,4]) %>% round(2)`).
 
