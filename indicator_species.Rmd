@@ -41,7 +41,7 @@ cat(paste('-', speclist), sep = '\n')
 ```
 
 
-```{r sizefreq, fig.width = 7.5, fig.height = 7}
+```{r DensBioSize, fig.show="hold", out.width="50%"}
 plotSpecies <- function(species){
    # subset species
    spec <- dl %>%
@@ -63,6 +63,8 @@ plotSpecies <- function(species){
       theme(panel.background = element_blank(), axis.line=element_line(),
             text = element_text(size = 16), legend.position = "bottom")
    print(sizefreq)
+   # Print a blank plot so density and biomass will be side-by-side
+   print(ggplot()+theme(panel.background=element_blank()))
    # Density and biomass inside and out
    specsum <- spec %>%
       group_by(MPA, InOut, SiteID) %>%

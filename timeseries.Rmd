@@ -284,7 +284,7 @@ The largest contributors to small-bodied density were masked gobies, small blueh
 ## Indicator Species
 
 ### Density
-```{r commDens, fig.width = 8, fig.height = 8, fig.cap="Mean density (#/100m^2^) of indicator species, summarized by time period, MPA, and inside/outside MPA boundaries. Error bars represent mean &plusmn; SE. Shape represents the MPA in which the site was located, and color represents whether it was inside or outside MPA boundaries."}
+```{r commDens, fig.width = 8, fig.height = 10, fig.cap="Mean density (#/100m^2^) of indicator species, summarized by time period, MPA, and inside/outside MPA boundaries. Error bars represent mean &plusmn; SE. Shape represents the MPA in which the site was located, and color represents whether it was inside or outside MPA boundaries."}
 # Summarize
 commSum <- combo %>% 
    filter(Commercial == "Y" & !is.na(period)) %>%
@@ -321,7 +321,7 @@ ggplot(aes(x= period, y = meandens, color = InOut, shape=MPA,
    
 ```
 
-```{r commBio, fig.width = 8, fig.height = 8, fig.cap="Mean biomass (kg/100m^2^) of indicator species, summarized by time period, MPA, and inside/outside MPA boundaries. Error bars represent mean &plusmn; SE. Shape represents the MPA in which the site was located, and color represents whether it was inside or outside MPA boundaries."}
+```{r commBio, fig.width = 8, fig.height = 10, fig.cap="Mean biomass (kg/100m^2^) of indicator species, summarized by time period, MPA, and inside/outside MPA boundaries. Error bars represent mean &plusmn; SE. Shape represents the MPA in which the site was located, and color represents whether it was inside or outside MPA boundaries."}
 ggplot(aes(x= period, y = meanbiokg, color = InOut, shape=MPA,
            group = interaction(MPA,InOut)), data = commSum) +
    geom_point(size=4,position=position_dodge(width=0.1)) +
