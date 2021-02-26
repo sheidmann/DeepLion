@@ -40,7 +40,7 @@ Species of interest include:
 cat(paste('-', speclist), sep = '\n') 
 ```
 
-## Size Frequency
+
 ```{r sizefreq, fig.width = 7.5, fig.height = 7}
 plotSpecies <- function(species){
    # subset species
