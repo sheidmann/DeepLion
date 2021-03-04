@@ -46,9 +46,12 @@ ggplot(data=., aes(x=size, y=total,fill = InOut)) +
    facet_wrap(~MPA,ncol=1) +
    theme(panel.background = element_blank(), axis.line=element_line(),
          text = element_text(size = 16), legend.position = "bottom")
+sizeMPAlm <- lm(size~MPA * InOut, lionsize)
+summary(sizeMPAlm)
 ```
 
 Lionfish were most abundant in the 20-30 cm size class.
+There was no evidence that lionfish were differently sized between the MCD and the VICRNM, but there was suggestive evidence that lionfish were larger inside MPAs than outside (p = `r summary(sizeMPAlm)$coefficients[3,4] %>% round(2)`), and there was a significant interaction between MPA and inside/outside (p = `r summary(sizeMPAlm)$coefficients[4,4] %>% round(2)`).
 
 ## Depth Patterns
 

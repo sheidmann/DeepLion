@@ -111,6 +111,21 @@ plotSpecies <- function(species){
 invisible(lapply(speclist, plotSpecies))
 ```
 
+```{r CommercialSize}
+commsize <- dl %>% 
+   filter(CommonName %in% speclist) %>%
+   mutate(Zm_pos = -Zm) %>%
+     select(SiteID, MPA, InOut, Zm_pos, all_of(sizecols)) %>%
+     pivot_longer(cols = all_of(sizecols), names_to = "sizebin", values_to = "count") %>%
+   mutate(midsize=recode(sizebin, "X0.5"=2.5,"X6.10"=7.5,"X11.20"=15,"X21.30"=25,"X31.40"=35,
+                         "X41.50"=45,"X51.60"=55,"X61.70"=65,"X71.80"=75,"X81.90"=85,"X91.100"=95)) %>%
+   uncount(count)
+commsizefit <- lm(midsize~MPA*InOut, commsize)
+summary(commsizefit)
+```
+
+Commercially-important fish species combined were significantly larger in the MCD than the VICRNM, but there was no difference in size across MPA boundaries.
+
 ### Herbivores
 ```{r sizefreqHerb, fig.width = 7.5, fig.height = 7, fig.cap="Size frequency distribution of herbivores, separated by MPA and inside/outside MPA boundaries."}
 dl %>%
@@ -157,6 +172,19 @@ dl %>%
            text = element_text(size = 16), legend.position = "bottom")
 ```
 
+```{r herbsizetest}
+herbsize <- dl %>%
+     filter(Troph == "herbivore") %>%
+     mutate(Zm_pos = -Zm) %>%
+     select(SiteID, MPA, InOut, Zm_pos, all_of(sizecols[1:5])) %>%
+     pivot_longer(cols = sizecols[1:5], names_to = "sizebin", values_to = "count") %>%
+   mutate(midsize=recode(sizebin, "X0.5"=2.5,"X6.10"=7.5,"X11.20"=15,"X21.30"=25,"X31.40"=35)) %>%
+   uncount(count)
+herbsizefit <- lm(midsize~MPA*InOut, herbsize)
+summary(herbsizefit)
+```
+
+Herbivores were larger in the MCD than the VICRNM, and larger outside MPAs than inside, but there was a significant interaction between these variables.
 ### Density
 ```{r herbdepthdens, fig.width = 7.5, fig.height = 7, fig.cap="Density of herbivores by depth. Shape indicates the MPA of the site, and color indicates whether the site was inside or outside the MPA."}
 dl %>%

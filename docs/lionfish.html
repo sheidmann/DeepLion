@@ -334,7 +334,27 @@ $(document).ready(function () {
 Size frequency distribution of lionfish, separated by MPA and inside/outside MPA boundaries.
 </p>
 </div>
-<p>Lionfish were most abundant in the 20-30 cm size class.</p>
+<pre><code>## 
+## Call:
+## lm(formula = size ~ MPA * InOut, data = lionsize)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -14.0000  -6.5000  -0.6667   3.1579  13.5000 
+## 
+## Coefficients:
+##                    Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)          26.667      1.316  20.259   &lt;2e-16 ***
+## MPAVICRNM            -4.167      2.633  -1.583   0.1186    
+## InOutOUT             -3.825      2.114  -1.809   0.0753 .  
+## MPAVICRNM:InOutOUT    8.991      4.281   2.100   0.0399 *  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 7.209 on 61 degrees of freedom
+## Multiple R-squared:  0.08034,    Adjusted R-squared:  0.03511 
+## F-statistic: 1.776 on 3 and 61 DF,  p-value: 0.1611</code></pre>
+<p>Lionfish were most abundant in the 20-30 cm size class. There was no evidence that lionfish were differently sized between the MCD and the VICRNM, but there was suggestive evidence that lionfish were larger inside MPAs than outside (p = 0.08), and there was a significant interaction between MPA and inside/outside (p = 0.04).</p>
 </div>
 <div id="depth-patterns" class="section level2">
 <h2>Depth Patterns</h2>
